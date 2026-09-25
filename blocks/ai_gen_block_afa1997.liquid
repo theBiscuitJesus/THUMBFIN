@@ -1,0 +1,42 @@
+{% doc %}
+  @prompt
+    Add Organization structured data (JSON-LD schema.org) to the theme's head section, including the store name, URL, and logo image URL, to help Google display the brand logo in search results and Knowledge Panels
+{% enddoc %}
+{% liquid
+  assign shop_logo = settings.logo
+  if shop_logo
+    assign logo_url = shop_logo | image_url: width: 600
+  elsif settings.brand_image
+    assign logo_url = settings.brand_image | image_url: width: 600
+  endif
+%}
+
+{% if logo_url %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ shop.url | json }},
+      "logo": {{ logo_url | json }}
+    }
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Organization schema",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This block adds Organization structured data to help Google display your brand logo in search results and Knowledge Panels. The block uses your store's logo from theme settings."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Organization schema"
+    }
+  ]
+}
+{% endschema %}
