@@ -6,6 +6,9 @@
   Sizes are in px rather than rem because many themes (Dawn included) set the
   root font-size to 10px, which would shrink every rem value in the mockup.
 
+  Built for Dawn 12: add-to-cart goes through Dawn's <product-form> element, so the
+  theme's cart notification / drawer opens exactly as on product pages.
+
   The theme's own header and footer are kept; this section replaces the body
   of the homepage only (hero -> ticker -> how it works -> shop -> reviews -> video).
 {%- endcomment -%}
@@ -109,6 +112,14 @@
   .tfr .tfr-btn--primary:hover { filter: brightness(1.08); }
   .tfr .tfr-btn--ghost { background: transparent; color: var(--tfr-cream); border: 1px solid var(--tfr-brass-dim); font-weight: 500; }
   .tfr .tfr-btn--ghost:hover { border-color: var(--tfr-brass); }
+  .tfr .tfr-btn { position: relative; }
+  .tfr .tfr-btn .loading__spinner { position: absolute; inset: 0; width: auto; display: flex; align-items: center; justify-content: center; }
+  .tfr .tfr-btn .loading__spinner.hidden { display: none; }
+  .tfr .tfr-btn .spinner { width: 20px; height: 20px; }
+  .tfr .tfr-btn .spinner .path { stroke: currentColor; }
+  .tfr .tfr-btn.loading > span { visibility: hidden; }
+  .tfr .tfr-form-error { margin-top: 12px; color: #ffb4a2; font-size: 14px; }
+  .tfr .tfr-form-error[hidden] { display: none; }
   .tfr .tfr-btn[disabled] { opacity: .45; cursor: not-allowed; filter: none; }
   .tfr .tfr-btn:focus-visible, .tfr .tfr-select:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 3px; }
 
@@ -125,7 +136,7 @@
   .tfr .tfr-hero-sub { color: var(--tfr-muted); font-size: 17px; max-width: 46ch; margin: 20px 0 30px; }
   .tfr .tfr-cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
   .tfr .tfr-hero-art { position: relative; height: 360px; display: flex; align-items: center; justify-content: center; }
-  .tfr .tfr-hero-art img { max-height: 100%; width: auto; object-fit: contain; }
+  .tfr .tfr-hero-art img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; box-shadow: 0 30px 60px rgba(0,0,0,0.45); }
 
   /* CSS product motif, used whenever no real photo is available */
   .tfr .tfr-fin-disc {
@@ -135,7 +146,7 @@
   }
   .tfr .tfr-fin-disc::after { content: ''; position: absolute; inset: 34px; border-radius: 50%; border: 1px dashed rgba(207,157,62,0.4); }
   .tfr .tfr-fin-stem {
-    position: absolute; width: 64px; height: 92px; top: 44%; left: 50%;
+    position: absolute; display: block; width: 64px; height: 92px; top: 44%; left: 50%;
     background: linear-gradient(180deg, var(--tfr-neon), #85c22a);
     border-radius: 30px 30px 8px 8px; transform: translate(-50%,-72%) rotate(-8deg);
     box-shadow: 0 18px 30px rgba(0,0,0,0.45);
@@ -209,7 +220,7 @@
 
   /* Reviews */
   .tfr .tfr-quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .tfr .tfr-quote { border-left: 2px solid var(--tfr-brass); padding-left: 18px; margin: 0; }
+  .tfr .tfr-quote { border-left: 2px solid var(--tfr-brass); padding-left: 18px; margin: 0; font-style: normal; }
   .tfr .tfr-quote p { font-size: 16px; color: var(--tfr-cream); }
   .tfr .tfr-quote cite { color: var(--tfr-muted); font-style: normal; font-size: 14px; display: block; margin-top: 10px; }
   .tfr .tfr-app-blocks { margin-top: 42px; }
@@ -357,10 +368,12 @@
               {%- endif -%}
             </p>
 
-            {%- form 'product', main -%}
-              {%- if main.has_only_default_variant -%}
-                <input type="hidden" name="id" value="{{ current.id }}">
-              {%- elsif use_swatches -%}
+            <product-form class="tfr-product-form" data-hide-errors="false">
+            {%- form 'product', main, novalidate: 'novalidate' -%}
+              {%- if main.has_only_default_variant or use_swatches -%}
+                <input type="hidden" name="id" value="{{ current.id }}" data-tfr-variant-id>
+              {%- endif -%}
+              {%- if use_swatches -%}
                 <fieldset class="tfr-swatches">
                   <legend class="tfr-option-label">{{ main.options.first | escape }}: <span data-tfr-variant-title>{{ current.title | escape }}</span></legend>
                   <div class="tfr-swatch-row">
@@ -387,8 +400,9 @@
                         type="radio"
                         class="tfr-visually-hidden"
                         id="tfr-{{ section.id }}-{{ variant.id }}"
-                        name="id"
+                        name="tfr-variant-{{ section.id }}"
                         value="{{ variant.id }}"
+                        data-tfr-variant-input
                         {% if variant.id == current.id %}checked{% endif %}
                         {% unless variant.available %}disabled{% endunless %}
                         data-price="{{ variant.price | money_without_trailing_zeros | escape }}"
@@ -408,9 +422,9 @@
                     {%- endfor -%}
                   </div>
                 </fieldset>
-              {%- else -%}
+              {%- elsif main.has_only_default_variant == false -%}
                 <label class="tfr-option-label" for="tfr-{{ section.id }}-variant">{{ main.options | join: ' / ' | escape }}</label>
-                <select class="tfr-select" id="tfr-{{ section.id }}-variant" name="id">
+                <select class="tfr-select" id="tfr-{{ section.id }}-variant" name="id" data-tfr-variant-input>
                   {%- for variant in main.variants -%}
                     <option
                       value="{{ variant.id }}"
@@ -436,9 +450,16 @@
                 data-label-sold-out="Sold out"
                 {% unless current.available %}disabled{% endunless %}
               >
-                {%- if current.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+                <span data-tfr-submit-label>
+                  {%- if current.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+                </span>
+                {%- render 'loading-spinner' -%}
               </button>
+              <div class="product-form__error-message-wrapper tfr-form-error" role="alert" hidden>
+                <span class="product-form__error-message"></span>
+              </div>
             {%- endform -%}
+            </product-form>
           </div>
         </thumbfin-spotlight>
       {%- elsif request.design_mode -%}
@@ -481,7 +502,8 @@
                 {%- if i == 1 and savings > 0 -%}
                   <p class="tfr-bundle-compare">vs {{ singles_total | money_without_trailing_zeros }} buying {{ section.settings.combo_units }} separately</p>
                 {%- endif -%}
-                {%- form 'product', card -%}
+                <product-form class="tfr-product-form" data-hide-errors="false">
+                {%- form 'product', card, novalidate: 'novalidate' -%}
                   {%- if card.has_only_default_variant -%}
                     <input type="hidden" name="id" value="{{ card.selected_or_first_available_variant.id }}">
                   {%- else -%}
@@ -495,9 +517,16 @@
                     </select>
                   {%- endif -%}
                   <button type="submit" name="add" class="tfr-btn {% if i == 1 %}tfr-btn--primary{% else %}tfr-btn--ghost{% endif %}" {% unless card.available %}disabled{% endunless %}>
-                    {%- if card.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+                    <span>
+                      {%- if card.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+                    </span>
+                    {%- render 'loading-spinner' -%}
                   </button>
+                  <div class="product-form__error-message-wrapper tfr-form-error" role="alert" hidden>
+                    <span class="product-form__error-message"></span>
+                  </div>
                 {%- endform -%}
+                </product-form>
               </div>
             {%- endif -%}
           {%- endfor -%}
@@ -571,17 +600,18 @@
   </section>
 </div>
 
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 <script>
   (function () {
     if (!customElements.get('thumbfin-spotlight')) {
-      // Keeps price, sold-out state and image in sync with the chosen variant.
-      // The form works without this: the checked radio / selected option is the variant id.
+      // Keeps the submitted variant id, price, sold-out state and image in sync with the
+      // chosen swatch. Adding to cart itself is handled by Dawn's <product-form>.
       customElements.define('thumbfin-spotlight', class extends HTMLElement {
         connectedCallback() {
           if (this._bound) return;
           this._bound = true;
           this.addEventListener('change', (event) => {
-            if (event.target.name === 'id') this.update(event.target);
+            if (event.target.matches('[data-tfr-variant-input]')) this.update(event.target);
           });
         }
 
@@ -589,6 +619,9 @@
           const source = input.tagName === 'SELECT' ? input.selectedOptions[0] : input;
           if (!source) return;
           const data = source.dataset;
+
+          const idInput = this.querySelector('[data-tfr-variant-id]');
+          if (idInput) idInput.value = source.value;
 
           const price = this.querySelector('[data-tfr-price]');
           if (price) price.textContent = data.price;
@@ -601,7 +634,9 @@
           if (button) {
             const available = data.available === 'true';
             button.disabled = !available;
-            button.textContent = available ? button.dataset.labelAdd : button.dataset.labelSoldOut;
+            button.querySelector('[data-tfr-submit-label]').textContent = available
+              ? button.dataset.labelAdd
+              : button.dataset.labelSoldOut;
           }
 
           const image = this.querySelector('.tfr-spot-img');
