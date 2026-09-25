@@ -1,0 +1,977 @@
+{%- comment -%}
+  Thumb Fin homepage redesign, ported from docs/thumbfin-redesign.html.
+
+  Scoping: every class is prefixed `tfr-` and every rule is nested under `.tfr`,
+  so nothing here leaks into the theme and theme styles are overridden inside it.
+  Sizes are in px rather than rem because many themes (Dawn included) set the
+  root font-size to 10px, which would shrink every rem value in the mockup.
+
+  The theme's own header and footer are kept; this section replaces the body
+  of the homepage only (hero -> ticker -> how it works -> shop -> reviews -> video).
+{%- endcomment -%}
+
+{%- liquid
+  assign main = section.settings.product
+
+  assign combo = section.settings.combo_product
+  if combo == blank
+    assign combo = all_products['combo-3-pack-one-of-each-version']
+  endif
+
+  assign addon = section.settings.addon_product
+  if addon == blank
+    assign addon = all_products['contact-paper-for-matte-finish']
+  endif
+
+  assign rating = section.settings.rating
+  assign rating_count = section.settings.rating_count
+  if section.settings.use_review_metafields and main.metafields.reviews.rating.value != blank
+    assign rating = main.metafields.reviews.rating.value.rating | round: 2
+    assign rating_count = main.metafields.reviews.rating_count.value
+  endif
+
+  assign video_type = 'youtube'
+  assign video_id = 'Y_QRGtpZdyI'
+  if section.settings.video != blank
+    assign video_type = section.settings.video.type
+    assign video_id = section.settings.video.id
+  endif
+
+  assign swatch_lines = section.settings.swatch_colors | newline_to_br | split: '<br />'
+-%}
+
+{%- liquid
+  assign heading_font = section.settings.heading_font
+  assign heading_font_bold = heading_font | font_modify: 'weight', '700'
+  assign body_font = section.settings.body_font
+  assign body_font_medium = body_font | font_modify: 'weight', '500'
+  assign body_font_bold = body_font | font_modify: 'weight', '600'
+-%}
+
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ heading_font_bold | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ body_font_medium | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+
+  .tfr {
+    --tfr-bg: #241408;
+    --tfr-panel: #2f1c0e;
+    --tfr-panel-2: #1a0e05;
+    --tfr-cream: #f4ecdd;
+    --tfr-muted: #c2ab8c;
+    --tfr-brass: #cf9d3e;
+    --tfr-brass-dim: #8a6a2b;
+    --tfr-neon: #c3ff5c;
+    --tfr-on-neon: #1a2400;
+    --tfr-line: rgba(244, 236, 221, 0.14);
+    --tfr-font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --tfr-font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    background: var(--tfr-bg);
+    color: var(--tfr-cream);
+    font-family: var(--tfr-font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: normal;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tfr *, .tfr *::before, .tfr *::after { box-sizing: border-box; }
+  .tfr h1, .tfr h2, .tfr h3, .tfr h4 {
+    font-family: var(--tfr-font-heading);
+    font-weight: {{ heading_font.weight }};
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    text-transform: none;
+    margin: 0;
+    color: var(--tfr-cream);
+  }
+  .tfr p { margin: 0; }
+  .tfr a { color: inherit; }
+  .tfr img { display: block; max-width: 100%; height: auto; }
+  .tfr fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .tfr .tfr-visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .tfr .tfr-wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  .tfr .tfr-section { padding: 70px 0; }
+  .tfr .tfr-editor-note { border: 1px dashed var(--tfr-brass); padding: 16px; color: var(--tfr-brass); }
+
+  /* Buttons */
+  .tfr .tfr-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 14px 26px; border-radius: 3px;
+    font-family: inherit; font-size: 16px; font-weight: 600; line-height: 1.2;
+    text-decoration: none; cursor: pointer; transition: filter .15s, border-color .15s;
+  }
+  .tfr .tfr-btn--primary { background: var(--tfr-neon); color: var(--tfr-on-neon); border: 1px solid var(--tfr-neon); }
+  .tfr .tfr-btn--primary:hover { filter: brightness(1.08); }
+  .tfr .tfr-btn--ghost { background: transparent; color: var(--tfr-cream); border: 1px solid var(--tfr-brass-dim); font-weight: 500; }
+  .tfr .tfr-btn--ghost:hover { border-color: var(--tfr-brass); }
+  .tfr .tfr-btn[disabled] { opacity: .45; cursor: not-allowed; filter: none; }
+  .tfr .tfr-btn:focus-visible, .tfr .tfr-select:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 3px; }
+
+  /* Hero */
+  .tfr .tfr-hero { position: relative; padding: 84px 0 64px; overflow: hidden; border-bottom: 1px solid var(--tfr-line); }
+  .tfr .tfr-hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  .tfr .tfr-badge {
+    display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px;
+    border: 1px solid var(--tfr-brass-dim); color: var(--tfr-brass);
+    font-size: 13px; padding: 6px 12px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .tfr .tfr-badge b { color: var(--tfr-cream); font-weight: 600; }
+  .tfr .tfr-hero h1 { font-size: clamp(37px, 4.5vw, 54px); line-height: 1.08; max-width: 12ch; }
+  .tfr .tfr-hero-sub { color: var(--tfr-muted); font-size: 17px; max-width: 46ch; margin: 20px 0 30px; }
+  .tfr .tfr-cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .tfr .tfr-hero-art { position: relative; height: 360px; display: flex; align-items: center; justify-content: center; }
+  .tfr .tfr-hero-art img { max-height: 100%; width: auto; object-fit: contain; }
+
+  /* CSS product motif, used whenever no real photo is available */
+  .tfr .tfr-fin-disc {
+    width: 240px; height: 240px; border-radius: 50%; position: relative;
+    background: radial-gradient(circle at 32% 28%, #3a2410, #150b03 72%);
+    border: 2px solid var(--tfr-brass-dim); box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  }
+  .tfr .tfr-fin-disc::after { content: ''; position: absolute; inset: 34px; border-radius: 50%; border: 1px dashed rgba(207,157,62,0.4); }
+  .tfr .tfr-fin-stem {
+    position: absolute; width: 64px; height: 92px; top: 44%; left: 50%;
+    background: linear-gradient(180deg, var(--tfr-neon), #85c22a);
+    border-radius: 30px 30px 8px 8px; transform: translate(-50%,-72%) rotate(-8deg);
+    box-shadow: 0 18px 30px rgba(0,0,0,0.45);
+  }
+
+  /* Ticker */
+  .tfr .tfr-ticker { background: var(--tfr-panel-2); border-bottom: 1px solid var(--tfr-line); padding: 14px 0; overflow: hidden; }
+  .tfr .tfr-ticker .tfr-wrap { display: flex; gap: 12px 40px; justify-content: center; flex-wrap: wrap; font-size: 14px; color: var(--tfr-muted); letter-spacing: 0.02em; }
+  .tfr .tfr-ticker strong { color: var(--tfr-brass); font-weight: 600; }
+
+  .tfr .tfr-section-head { max-width: 52ch; margin-bottom: 42px; }
+  .tfr .tfr-section-head h2 { font-size: clamp(27px, 3vw, 35px); }
+  .tfr .tfr-section-head p { color: var(--tfr-muted); margin-top: 12px; }
+
+  /* How it works */
+  .tfr .tfr-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .tfr .tfr-step { border-top: 2px solid var(--tfr-brass); padding-top: 18px; }
+  .tfr .tfr-step-n { font-family: var(--tfr-font-heading); color: var(--tfr-brass); font-size: 14px; }
+  .tfr .tfr-step h3 { font-size: 19px; margin: 8px 0; }
+  .tfr .tfr-step p { color: var(--tfr-muted); font-size: 15px; }
+
+  /* Product spotlight */
+  .tfr .tfr-spotlight {
+    background: var(--tfr-panel); border: 1px solid var(--tfr-line); border-radius: 6px;
+    padding: 44px; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center;
+  }
+  .tfr .tfr-spot-visual { min-height: 260px; display: flex; align-items: center; justify-content: center; }
+  .tfr .tfr-spot-visual img { border-radius: 4px; max-height: 420px; width: auto; object-fit: contain; }
+  .tfr .tfr-spot-visual .tfr-fin-disc { width: 190px; height: 190px; }
+  .tfr .tfr-spot-visual .tfr-fin-stem { width: 50px; height: 74px; }
+  .tfr .tfr-eyebrow { font-size: 14px; color: var(--tfr-brass); letter-spacing: 0.03em; }
+  .tfr .tfr-price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 14px 0 20px; }
+  .tfr .tfr-price { font-family: var(--tfr-font-heading); font-size: 32px; line-height: 1.1; color: var(--tfr-cream); }
+  .tfr .tfr-compare { color: var(--tfr-muted); font-size: 16px; }
+  .tfr .tfr-price-note { color: var(--tfr-muted); font-size: 14px; }
+  .tfr .tfr-desc { color: var(--tfr-muted); margin-bottom: 20px; }
+  .tfr .tfr-option-label { font-size: 14px; color: var(--tfr-muted); margin-bottom: 10px; padding: 0; }
+  .tfr .tfr-option-label span { color: var(--tfr-cream); }
+  .tfr .tfr-swatches { margin-bottom: 26px; }
+  .tfr .tfr-swatch-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .tfr .tfr-swatch {
+    position: relative; display: block; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--tfr-swatch, var(--tfr-muted));
+    border: 2px solid rgba(244,236,221,0.35); cursor: pointer;
+  }
+  .tfr input:checked + .tfr-swatch { border-color: var(--tfr-panel); box-shadow: 0 0 0 2px var(--tfr-neon); }
+  .tfr input:focus-visible + .tfr-swatch { outline: 2px solid var(--tfr-cream); outline-offset: 4px; }
+  .tfr input:disabled + .tfr-swatch { opacity: .35; cursor: not-allowed; }
+  .tfr input:disabled + .tfr-swatch::after {
+    content: ''; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px;
+    background: var(--tfr-cream); transform: translateX(-50%) rotate(45deg);
+  }
+  .tfr .tfr-select {
+    display: block; width: 100%; max-width: 320px; margin-bottom: 20px; padding: 10px 12px;
+    background: var(--tfr-panel-2); color: var(--tfr-cream); border: 1px solid var(--tfr-brass-dim);
+    border-radius: 3px; font: inherit; font-size: 15px;
+  }
+
+  /* Bundles */
+  .tfr .tfr-bundle-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; margin-top: 26px; }
+  .tfr .tfr-bundle-card { position: relative; display: flex; flex-direction: column; border: 1px solid var(--tfr-line); border-radius: 6px; padding: 28px; background: var(--tfr-panel-2); }
+  .tfr .tfr-bundle-card--featured { border-color: var(--tfr-brass); }
+  .tfr .tfr-save-tag { position: absolute; top: -12px; right: 22px; background: var(--tfr-neon); color: var(--tfr-on-neon); font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+  .tfr .tfr-bundle-card h3 { font-size: 18px; margin-bottom: 8px; }
+  .tfr .tfr-bundle-card p { color: var(--tfr-muted); font-size: 15px; margin-bottom: 12px; }
+  .tfr .tfr-bundle-card .tfr-price { font-size: 24px; }
+  .tfr .tfr-bundle-card .tfr-bundle-compare { font-size: 14px; margin: 4px 0 0; }
+  .tfr .tfr-bundle-card form { margin-top: auto; padding-top: 16px; }
+  .tfr .tfr-bundle-card .tfr-select { margin-bottom: 12px; }
+  .tfr .tfr-bundle-card .tfr-btn { padding: 11px 20px; font-size: 15px; }
+
+  /* Reviews */
+  .tfr .tfr-quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .tfr .tfr-quote { border-left: 2px solid var(--tfr-brass); padding-left: 18px; margin: 0; }
+  .tfr .tfr-quote p { font-size: 16px; color: var(--tfr-cream); }
+  .tfr .tfr-quote cite { color: var(--tfr-muted); font-style: normal; font-size: 14px; display: block; margin-top: 10px; }
+  .tfr .tfr-app-blocks { margin-top: 42px; }
+
+  /* Video */
+  .tfr .tfr-video-band { background: var(--tfr-panel); border: 1px solid var(--tfr-line); border-radius: 6px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; }
+  .tfr .tfr-video-frame { position: relative; background: var(--tfr-panel-2); min-height: 260px; aspect-ratio: 16 / 9; }
+  .tfr .tfr-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .tfr .tfr-video-facade { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .tfr .tfr-video-facade img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .6; }
+  .tfr .tfr-play { position: relative; width: 66px; height: 66px; border-radius: 50%; background: var(--tfr-neon); display: flex; align-items: center; justify-content: center; transition: transform .15s; }
+  .tfr .tfr-play::after { content: ''; border-left: 16px solid var(--tfr-on-neon); border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 4px; }
+  .tfr .tfr-video-facade:hover .tfr-play { transform: scale(1.06); }
+  .tfr .tfr-video-facade:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: -4px; }
+  .tfr .tfr-video-copy { padding: 44px; align-self: center; }
+  .tfr .tfr-video-copy h2 { font-size: 26px; margin-bottom: 14px; }
+  .tfr .tfr-video-copy p { color: var(--tfr-muted); margin-bottom: 22px; }
+
+  @media (max-width: 820px) {
+    .tfr .tfr-wrap { padding: 0 20px; }
+    .tfr .tfr-section { padding: 56px 0; }
+    .tfr .tfr-hero { padding: 48px 0 48px; }
+    .tfr .tfr-hero-grid, .tfr .tfr-spotlight, .tfr .tfr-video-band { grid-template-columns: minmax(0, 1fr); }
+    .tfr .tfr-hero-grid { gap: 28px; }
+    .tfr .tfr-steps, .tfr .tfr-quotes { grid-template-columns: 1fr; }
+    .tfr .tfr-hero-art { height: 220px; order: -1; }
+    .tfr .tfr-hero-art .tfr-fin-disc { transform: scale(.8); }
+    .tfr .tfr-spotlight { padding: 28px 22px; gap: 24px; }
+    .tfr .tfr-video-frame { min-height: 0; }
+    .tfr .tfr-video-copy { padding: 28px 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tfr .tfr-btn, .tfr .tfr-play { transition: none; }
+  }
+</style>
+
+<div class="tfr">
+  {%- comment -%} HERO {%- endcomment -%}
+  <section class="tfr-hero">
+    <div class="tfr-wrap tfr-hero-grid">
+      <div>
+        {%- if rating != blank -%}
+          <p class="tfr-badge">
+            <span aria-hidden="true">★</span>
+            <b>{{ rating }}</b>
+            {%- if rating_count != blank %} from {{ rating_count }} {{ section.settings.rating_suffix | escape }}{% endif -%}
+            {%- if section.settings.badge_extra != blank %} · {{ section.settings.badge_extra | escape }}{% endif -%}
+          </p>
+        {%- endif -%}
+        <h1>{{ section.settings.hero_heading | escape | newline_to_br }}</h1>
+        {%- if section.settings.hero_text != blank -%}
+          <p class="tfr-hero-sub">{{ section.settings.hero_text | escape }}</p>
+        {%- endif -%}
+        <div class="tfr-cta-row">
+          <a class="tfr-btn tfr-btn--primary" href="#thumbfin-shop">
+            {{- section.settings.hero_cta_label | escape -}}
+            {%- if section.settings.hero_show_price and main != blank %} — {{ main.price | money_without_trailing_zeros }}{% endif -%}
+          </a>
+          {%- if section.settings.hero_secondary_label != blank -%}
+            <a class="tfr-btn tfr-btn--ghost" href="#thumbfin-video">{{ section.settings.hero_secondary_label | escape }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="tfr-hero-art">
+        {%- if section.settings.hero_image != blank -%}
+          {{ section.settings.hero_image | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 750, 1000', sizes: '(max-width: 820px) 90vw, 480px' }}
+        {%- else -%}
+          <div class="tfr-fin-disc" aria-hidden="true"><div class="tfr-fin-stem"></div></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} TRUST TICKER {%- endcomment -%}
+  {%- assign ticker_blocks = section.blocks | where: 'type', 'ticker' -%}
+  {%- if ticker_blocks.size > 0 -%}
+    <div class="tfr-ticker">
+      <div class="tfr-wrap">
+        {%- for block in ticker_blocks -%}
+          <span {{ block.shopify_attributes }}><strong>{{ block.settings.highlight | escape }}</strong> {{ block.settings.text | escape }}</span>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} HOW IT WORKS {%- endcomment -%}
+  {%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
+  {%- if step_blocks.size > 0 -%}
+    <section class="tfr-section" id="thumbfin-how">
+      <div class="tfr-wrap">
+        <div class="tfr-section-head">
+          <h2>{{ section.settings.how_heading | escape }}</h2>
+          {%- if section.settings.how_text != blank -%}<p>{{ section.settings.how_text | escape }}</p>{%- endif -%}
+        </div>
+        <div class="tfr-steps">
+          {%- for block in step_blocks -%}
+            <div class="tfr-step" {{ block.shopify_attributes }}>
+              <div class="tfr-step-n">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</div>
+              <h3>{{ block.settings.heading | escape }}</h3>
+              <p>{{ block.settings.text | escape }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} SHOP: single product spotlight + bundle row {%- endcomment -%}
+  <section class="tfr-section" id="thumbfin-shop">
+    <div class="tfr-wrap">
+      {%- if main != blank -%}
+        {%- liquid
+          assign current = main.selected_or_first_available_variant
+          assign first_option = main.options.first | downcase
+          assign use_swatches = false
+          if main.options.size == 1 and main.has_only_default_variant == false
+            if first_option == 'color' or first_option == 'colour'
+              assign use_swatches = true
+            endif
+          endif
+          assign current_media = current.featured_media | default: main.featured_media
+        -%}
+        <thumbfin-spotlight class="tfr-spotlight">
+          <div class="tfr-spot-visual">
+            {%- if current_media != blank -%}
+              {{ current_media.preview_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 900', sizes: '(max-width: 820px) 90vw, 440px', alt: main.title, class: 'tfr-spot-img' }}
+            {%- else -%}
+              <div class="tfr-fin-disc" aria-hidden="true"><div class="tfr-fin-stem"></div></div>
+            {%- endif -%}
+          </div>
+          <div>
+            <h2 class="tfr-eyebrow">{{ main.title | escape }}</h2>
+            <div class="tfr-price-row">
+              <span class="tfr-price" data-tfr-price>{{ current.price | money_without_trailing_zeros }}</span>
+              <s class="tfr-compare" data-tfr-compare>{% if current.compare_at_price > current.price %}{{ current.compare_at_price | money_without_trailing_zeros }}{% endif %}</s>
+              {%- if section.settings.price_note != blank -%}
+                <span class="tfr-price-note">{{ section.settings.price_note | escape }}</span>
+              {%- endif -%}
+            </div>
+            <p class="tfr-desc">
+              {%- if section.settings.spotlight_desc != blank -%}
+                {{ section.settings.spotlight_desc | escape }}
+              {%- else -%}
+                {{ main.description | strip_html | truncatewords: 30 }}
+              {%- endif -%}
+            </p>
+
+            {%- form 'product', main -%}
+              {%- if main.has_only_default_variant -%}
+                <input type="hidden" name="id" value="{{ current.id }}">
+              {%- elsif use_swatches -%}
+                <fieldset class="tfr-swatches">
+                  <legend class="tfr-option-label">{{ main.options.first | escape }}: <span data-tfr-variant-title>{{ current.title | escape }}</span></legend>
+                  <div class="tfr-swatch-row">
+                    {%- for variant in main.variants -%}
+                      {%- liquid
+                        assign swatch = false
+                        for value in main.options_with_values.first.values
+                          if value.name == variant.option1 and value.swatch.color != blank
+                            assign swatch = value.swatch.color
+                          endif
+                        endfor
+                        if swatch == false
+                          assign variant_key = variant.option1 | handleize
+                          for line in swatch_lines
+                            assign pair = line | split: ':'
+                            assign pair_key = pair.first | strip | handleize
+                            if pair_key == variant_key
+                              assign swatch = pair.last | strip
+                            endif
+                          endfor
+                        endif
+                      -%}
+                      <input
+                        type="radio"
+                        class="tfr-visually-hidden"
+                        id="tfr-{{ section.id }}-{{ variant.id }}"
+                        name="id"
+                        value="{{ variant.id }}"
+                        {% if variant.id == current.id %}checked{% endif %}
+                        {% unless variant.available %}disabled{% endunless %}
+                        data-price="{{ variant.price | money_without_trailing_zeros | escape }}"
+                        data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money_without_trailing_zeros | escape }}{% endif %}"
+                        data-available="{{ variant.available }}"
+                        data-title="{{ variant.title | escape }}"
+                        data-image="{% if variant.featured_media %}{{ variant.featured_media.preview_image | image_url: width: 900 }}{% endif %}"
+                      >
+                      <label
+                        for="tfr-{{ section.id }}-{{ variant.id }}"
+                        class="tfr-swatch"
+                        title="{{ variant.title | escape }}"
+                        {% if swatch %}style="--tfr-swatch: {{ swatch }};"{% endif %}
+                      >
+                        <span class="tfr-visually-hidden">{{ variant.title | escape }}{% unless variant.available %} (sold out){% endunless %}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- else -%}
+                <label class="tfr-option-label" for="tfr-{{ section.id }}-variant">{{ main.options | join: ' / ' | escape }}</label>
+                <select class="tfr-select" id="tfr-{{ section.id }}-variant" name="id">
+                  {%- for variant in main.variants -%}
+                    <option
+                      value="{{ variant.id }}"
+                      {% if variant.id == current.id %}selected{% endif %}
+                      {% unless variant.available %}disabled{% endunless %}
+                      data-price="{{ variant.price | money_without_trailing_zeros | escape }}"
+                      data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money_without_trailing_zeros | escape }}{% endif %}"
+                      data-available="{{ variant.available }}"
+                      data-title="{{ variant.title | escape }}"
+                      data-image="{% if variant.featured_media %}{{ variant.featured_media.preview_image | image_url: width: 900 }}{% endif %}"
+                    >
+                      {{- variant.title | escape }}{% unless variant.available %} (sold out){% endunless -%}
+                    </option>
+                  {%- endfor -%}
+                </select>
+              {%- endif -%}
+              <button
+                type="submit"
+                name="add"
+                class="tfr-btn tfr-btn--primary"
+                data-tfr-submit
+                data-label-add="{{ section.settings.add_label | escape }}"
+                data-label-sold-out="Sold out"
+                {% unless current.available %}disabled{% endunless %}
+              >
+                {%- if current.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+              </button>
+            {%- endform -%}
+          </div>
+        </thumbfin-spotlight>
+      {%- elsif request.design_mode -%}
+        <p class="tfr-editor-note">Choose the single Thumb Fin product under “Products” in this section’s settings.</p>
+      {%- endif -%}
+
+      {%- if combo.id != blank or addon.id != blank -%}
+        <div class="tfr-bundle-row">
+          {%- for i in (1..2) -%}
+            {%- liquid
+              if i == 1
+                assign card = combo
+                assign card_desc = section.settings.combo_desc
+                assign card_prefix = ''
+              else
+                assign card = addon
+                assign card_desc = section.settings.addon_desc
+                assign card_prefix = '+ '
+              endif
+            -%}
+            {%- if card.id != blank -%}
+              <div class="tfr-bundle-card{% if i == 1 %} tfr-bundle-card--featured{% endif %}">
+                {%- if i == 1 -%}
+                  {%- liquid
+                    assign singles_total = 0
+                    if main != blank
+                      assign singles_total = main.price | times: section.settings.combo_units
+                    endif
+                    assign savings = singles_total | minus: card.price
+                  -%}
+                  {%- if section.settings.save_label != blank -%}
+                    <span class="tfr-save-tag">{{ section.settings.save_label | escape }}</span>
+                  {%- elsif savings > 0 -%}
+                    <span class="tfr-save-tag">Save {{ savings | money_without_trailing_zeros }}</span>
+                  {%- endif -%}
+                {%- endif -%}
+                <h3>{{ card_prefix }}{{ card.title | escape }}</h3>
+                {%- if card_desc != blank -%}<p>{{ card_desc | escape }}</p>{%- endif -%}
+                <div class="tfr-price">{{ card.price | money_without_trailing_zeros }}</div>
+                {%- if i == 1 and savings > 0 -%}
+                  <p class="tfr-bundle-compare">vs {{ singles_total | money_without_trailing_zeros }} buying {{ section.settings.combo_units }} separately</p>
+                {%- endif -%}
+                {%- form 'product', card -%}
+                  {%- if card.has_only_default_variant -%}
+                    <input type="hidden" name="id" value="{{ card.selected_or_first_available_variant.id }}">
+                  {%- else -%}
+                    <label class="tfr-visually-hidden" for="tfr-{{ section.id }}-card-{{ i }}">{{ card.options | join: ' / ' | escape }}</label>
+                    <select class="tfr-select" id="tfr-{{ section.id }}-card-{{ i }}" name="id">
+                      {%- for variant in card.variants -%}
+                        <option value="{{ variant.id }}" {% if variant.id == card.selected_or_first_available_variant.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                          {{- variant.title | escape }} — {{ variant.price | money_without_trailing_zeros }}{% unless variant.available %} (sold out){% endunless -%}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                  {%- endif -%}
+                  <button type="submit" name="add" class="tfr-btn {% if i == 1 %}tfr-btn--primary{% else %}tfr-btn--ghost{% endif %}" {% unless card.available %}disabled{% endunless %}>
+                    {%- if card.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+                  </button>
+                {%- endform -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} REVIEWS {%- endcomment -%}
+  {%- assign quote_blocks = section.blocks | where: 'type', 'quote' -%}
+  {%- assign app_blocks = section.blocks | where: 'type', '@app' -%}
+  {%- if quote_blocks.size > 0 or app_blocks.size > 0 -%}
+    <section class="tfr-section" id="thumbfin-reviews">
+      <div class="tfr-wrap">
+        <div class="tfr-section-head">
+          <h2>{{ section.settings.reviews_heading | escape }}</h2>
+          {%- if section.settings.reviews_text != blank -%}<p>{{ section.settings.reviews_text | escape }}</p>{%- endif -%}
+        </div>
+        {%- if quote_blocks.size > 0 -%}
+          <div class="tfr-quotes">
+            {%- for block in quote_blocks -%}
+              <blockquote class="tfr-quote" {{ block.shopify_attributes }}>
+                <p>{{ block.settings.text | escape }}</p>
+                {%- if block.settings.author != blank -%}<cite>— {{ block.settings.author | escape }}</cite>{%- endif -%}
+              </blockquote>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        {%- if app_blocks.size > 0 -%}
+          <div class="tfr-app-blocks">
+            {%- for block in app_blocks -%}
+              {% render block %}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} VIDEO {%- endcomment -%}
+  <section class="tfr-section" id="thumbfin-video">
+    <div class="tfr-wrap">
+      <thumbfin-video class="tfr-video-band" data-video-type="{{ video_type }}" data-video-id="{{ video_id | escape }}">
+        <div class="tfr-video-frame" data-tfr-frame>
+          {%- liquid
+            if video_type == 'vimeo'
+              assign watch_url = 'https://vimeo.com/' | append: video_id
+            else
+              assign watch_url = 'https://www.youtube.com/watch?v=' | append: video_id
+            endif
+          -%}
+          <a class="tfr-video-facade" href="{{ watch_url }}" data-tfr-play target="_blank" rel="noopener">
+            {%- if section.settings.video_poster != blank -%}
+              {{ section.settings.video_poster | image_url: width: 1100 | image_tag: loading: 'lazy', alt: '' }}
+            {%- elsif video_type == 'youtube' -%}
+              <img src="https://i.ytimg.com/vi/{{ video_id | escape }}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
+            {%- endif -%}
+            <span class="tfr-play"></span>
+            <span class="tfr-visually-hidden">Play video: {{ section.settings.video_heading | escape }}</span>
+          </a>
+        </div>
+        <div class="tfr-video-copy">
+          <h2>{{ section.settings.video_heading | escape }}</h2>
+          {%- if section.settings.video_text != blank -%}<p>{{ section.settings.video_text | escape }}</p>{%- endif -%}
+          {%- if section.settings.video_button_label != blank -%}
+            <a class="tfr-btn tfr-btn--ghost" href="{{ watch_url }}" data-tfr-play target="_blank" rel="noopener">{{ section.settings.video_button_label | escape }}</a>
+          {%- endif -%}
+        </div>
+      </thumbfin-video>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function () {
+    if (!customElements.get('thumbfin-spotlight')) {
+      // Keeps price, sold-out state and image in sync with the chosen variant.
+      // The form works without this: the checked radio / selected option is the variant id.
+      customElements.define('thumbfin-spotlight', class extends HTMLElement {
+        connectedCallback() {
+          if (this._bound) return;
+          this._bound = true;
+          this.addEventListener('change', (event) => {
+            if (event.target.name === 'id') this.update(event.target);
+          });
+        }
+
+        update(input) {
+          const source = input.tagName === 'SELECT' ? input.selectedOptions[0] : input;
+          if (!source) return;
+          const data = source.dataset;
+
+          const price = this.querySelector('[data-tfr-price]');
+          if (price) price.textContent = data.price;
+          const compare = this.querySelector('[data-tfr-compare]');
+          if (compare) compare.textContent = data.compare || '';
+          const title = this.querySelector('[data-tfr-variant-title]');
+          if (title) title.textContent = data.title;
+
+          const button = this.querySelector('[data-tfr-submit]');
+          if (button) {
+            const available = data.available === 'true';
+            button.disabled = !available;
+            button.textContent = available ? button.dataset.labelAdd : button.dataset.labelSoldOut;
+          }
+
+          const image = this.querySelector('.tfr-spot-img');
+          if (image && data.image) {
+            image.removeAttribute('srcset');
+            image.src = data.image;
+          }
+        }
+      });
+    }
+
+    if (!customElements.get('thumbfin-video')) {
+      // Click-to-load video: nothing from YouTube/Vimeo loads until the visitor asks for it.
+      customElements.define('thumbfin-video', class extends HTMLElement {
+        connectedCallback() {
+          if (this._bound) return;
+          this._bound = true;
+          this.querySelectorAll('[data-tfr-play]').forEach((trigger) => {
+            trigger.addEventListener('click', (event) => {
+              event.preventDefault();
+              this.play();
+            });
+          });
+        }
+
+        play() {
+          const frame = this.querySelector('[data-tfr-frame]');
+          if (!frame || frame.querySelector('iframe')) return;
+          const id = encodeURIComponent(this.dataset.videoId);
+          const src = this.dataset.videoType === 'vimeo'
+            ? `https://player.vimeo.com/video/${id}?autoplay=1`
+            : `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+          const iframe = document.createElement('iframe');
+          iframe.src = src;
+          iframe.title = this.querySelector('h2')?.textContent || 'Thumb Fin demo video';
+          iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+          iframe.allowFullscreen = true;
+          frame.replaceChildren(iframe);
+          frame.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Thumb Fin homepage",
+  "tag": "div",
+  "class": "section-thumbfin-home",
+  "enabled_on": {
+    "templates": ["index"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Fonts"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Headings",
+      "default": "oswald_n6"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Single Thumb Fin",
+      "info": "Colour swatches are built from this product's variants."
+    },
+    {
+      "type": "product",
+      "id": "combo_product",
+      "label": "Combo pack",
+      "info": "Falls back to the product with handle combo-3-pack-one-of-each-version."
+    },
+    {
+      "type": "range",
+      "id": "combo_units",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "label": "Singles included in combo",
+      "info": "Used to calculate the savings tag (singles × price − combo price)."
+    },
+    {
+      "type": "product",
+      "id": "addon_product",
+      "label": "Add-on (contact paper)",
+      "info": "Falls back to the product with handle contact-paper-for-matte-finish."
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_heading",
+      "label": "Heading",
+      "default": "Stop drilling holes\nin your bass."
+    },
+    {
+      "type": "textarea",
+      "id": "hero_text",
+      "label": "Text",
+      "default": "Thumb Fin is a suction-cup thumb rest you can place anywhere, move anytime, and remove without a trace. No screws, no adhesive, no regrets."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_label",
+      "label": "Main button label",
+      "default": "Shop Thumb Fin"
+    },
+    {
+      "type": "checkbox",
+      "id": "hero_show_price",
+      "label": "Show single price on main button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_secondary_label",
+      "label": "Video button label",
+      "default": "Watch it in action"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image",
+      "info": "Leave empty to show the drawn Thumb Fin graphic."
+    },
+    {
+      "type": "header",
+      "content": "Rating badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_review_metafields",
+      "label": "Use live rating from review app",
+      "info": "Reads the standard reviews.rating / reviews.rating_count product metafields (Judge.me, Yotpo, Shopify Product Reviews, etc.). Falls back to the values below.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Rating",
+      "default": "4.84"
+    },
+    {
+      "type": "text",
+      "id": "rating_count",
+      "label": "Review count",
+      "default": "145"
+    },
+    {
+      "type": "text",
+      "id": "rating_suffix",
+      "label": "Reviewer noun",
+      "default": "bassists"
+    },
+    {
+      "type": "text",
+      "id": "badge_extra",
+      "label": "Extra badge text",
+      "default": "Patented design"
+    },
+    {
+      "type": "header",
+      "content": "How it works"
+    },
+    {
+      "type": "text",
+      "id": "how_heading",
+      "label": "Heading",
+      "default": "Three steps, no tools"
+    },
+    {
+      "type": "text",
+      "id": "how_text",
+      "label": "Text",
+      "default": "Most thumb rests mean drilling into your instrument. Thumb Fin doesn't."
+    },
+    {
+      "type": "header",
+      "content": "Shop"
+    },
+    {
+      "type": "textarea",
+      "id": "spotlight_desc",
+      "label": "Single product description",
+      "info": "Leave empty to use the product's own description.",
+      "default": "The original. Suction-mounts to any bass or guitar in seconds, no instrument modification required."
+    },
+    {
+      "type": "text",
+      "id": "price_note",
+      "label": "Price note",
+      "default": "free US shipping over $35"
+    },
+    {
+      "type": "textarea",
+      "id": "swatch_colors",
+      "label": "Swatch colours",
+      "info": "One per line as Colour name: #hex. Only used where the variant has no colour swatch set in Shopify.",
+      "default": "Black: #171717\nNeon: #c3ff5c\nRed: #c23b3b\nSky Blue: #5fb8e0\nYellow: #e8c93f\nPink: #e07bb0"
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Add to cart label",
+      "default": "Add to cart"
+    },
+    {
+      "type": "textarea",
+      "id": "combo_desc",
+      "label": "Combo description",
+      "default": "One of each version, so you can find your favorite before committing to one."
+    },
+    {
+      "type": "text",
+      "id": "save_label",
+      "label": "Combo savings tag",
+      "info": "Leave empty to calculate it from live prices."
+    },
+    {
+      "type": "textarea",
+      "id": "addon_desc",
+      "label": "Add-on description",
+      "default": "For satin or matte-finish basses — gives the suction cup a surface to grip. Often added with any color."
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "reviews_heading",
+      "label": "Heading",
+      "default": "What bassists are saying"
+    },
+    {
+      "type": "text",
+      "id": "reviews_text",
+      "label": "Text",
+      "default": "145 reviews, 89% five-star."
+    },
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video_url",
+      "id": "video",
+      "accept": ["youtube", "vimeo"],
+      "label": "Demo video",
+      "info": "Leave empty to use the existing demo (youtube.com/watch?v=Y_QRGtpZdyI)."
+    },
+    {
+      "type": "image_picker",
+      "id": "video_poster",
+      "label": "Video cover image",
+      "info": "Optional. YouTube videos use their own thumbnail by default."
+    },
+    {
+      "type": "text",
+      "id": "video_heading",
+      "label": "Heading",
+      "default": "See it mounted on a real bass"
+    },
+    {
+      "type": "textarea",
+      "id": "video_text",
+      "label": "Text",
+      "default": "Watch the two-minute demo — attaching, repositioning, and a full playing session with Thumb Fin."
+    },
+    {
+      "type": "text",
+      "id": "video_button_label",
+      "label": "Button label",
+      "default": "Watch demo"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "ticker",
+      "name": "Trust strip item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "highlight",
+          "label": "Highlighted text",
+          "default": "Zero-damage"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "suction mount"
+        }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "How-it-works step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Press it on"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "The suction cup grips any gloss or satin finish — no adhesive residue, ever."
+        }
+      ]
+    },
+    {
+      "type": "quote",
+      "name": "Review quote",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Use the customer's exact review text, with their permission."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Quote"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Name"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Thumb Fin homepage",
+      "blocks": [
+        { "type": "ticker", "settings": { "highlight": "Zero-damage", "text": "suction mount" } },
+        { "type": "ticker", "settings": { "highlight": "Repositionable", "text": "anytime" } },
+        { "type": "ticker", "settings": { "highlight": "6 colors", "text": "one fit" } },
+        { "type": "ticker", "settings": { "highlight": "Patented", "text": "since day one" } },
+        { "type": "step", "settings": { "heading": "Press it on", "text": "The suction cup grips any gloss or satin finish — no adhesive residue, ever." } },
+        { "type": "step", "settings": { "heading": "Place it right", "text": "Slide it into your exact hand position, above or below the strings." } },
+        { "type": "step", "settings": { "heading": "Play, relaxed", "text": "A biomechanically neutral thumb position means less tendon strain, longer sets." } },
+        { "type": "quote", "settings": { "text": "Stays locked in through full sets, and it finally gives my thumb a proper resting spot without touching my instrument.", "author": "Flavio P., Italy" } },
+        { "type": "quote", "settings": { "text": "Didn't want to drill into my Stingray, so this was the only real option — and it genuinely doesn't slide around.", "author": "Anna A." } },
+        { "type": "quote", "settings": { "text": "Keeps my thumb off the E string so my fingers can actually focus on plucking. Simple fix, big difference.", "author": "David M." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
