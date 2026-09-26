@@ -1,1 +1,143 @@
-{"sections":{"main":{"type":"main-product","blocks":{"title":{"type":"title","settings":{}},"price":{"type":"price","settings":{}},"variant_picker":{"type":"variant_picker","settings":{"picker_type":"button"}},"quantity_selector":{"type":"quantity_selector","settings":{}},"buy_buttons":{"type":"buy_buttons","settings":{"show_dynamic_checkout":true}},"description":{"type":"description","settings":{}},"thumbfin_buybox_note":{"type":"custom_liquid","settings":{"custom_liquid":"{% render 'thumbfin-buybox-note', product: product, combo: all_products['combo-3-pack-one-of-each-version'], addon: all_products['contact-paper-for-matte-finish'] %}"}}},"block_order":["title","price","variant_picker","quantity_selector","buy_buttons","thumbfin_buybox_note","description"],"settings":{"enable_sticky_info":true,"media_position":"left","gallery_layout":"stacked","media_size":"large","constrain_to_viewport":true,"media_fit":"contain","image_zoom":"lightbox","hide_variants":true,"enable_video_looping":false}},"thumbfin_product_extras":{"type":"thumbfin-product-extras","blocks":{"ticker_1":{"type":"ticker","settings":{"highlight":"Zero-damage","text":"suction mount"}},"ticker_2":{"type":"ticker","settings":{"highlight":"Repositionable","text":"anytime"}},"ticker_3":{"type":"ticker","settings":{"highlight":"6 colors","text":"one fit"}},"ticker_4":{"type":"ticker","settings":{"highlight":"Patented","text":"since day one"}},"step_1":{"type":"step","settings":{"heading":"Clean the surface","text":"Wipe the spot and the suction cup with a soft cloth. Matte finish? Apply the contact paper first."}},"step_2":{"type":"step","settings":{"heading":"Press it on","text":"Place it where your thumb naturally rests and press firmly. Move it anytime: no screws, no adhesive."}},"step_3":{"type":"step","settings":{"heading":"Play, relaxed","text":"Your thumb rests in a relaxed, natural position, so you can focus on your playing, not your hand."}}},"block_order":["ticker_1","ticker_2","ticker_3","ticker_4","step_1","step_2","step_3"],"settings":{"video":"https:\/\/www.youtube.com\/watch?v=Y_QRGtpZdyI","video_poster":"shopify:\/\/shop_images\/BULLY_VIDEO.png"}}},"order":["main","thumbfin_product_extras"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "thumbfin_buybox_note": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'thumbfin-buybox-note', product: product, combo: all_products['combo-3-pack-one-of-each-version'], addon: all_products['contact-paper-for-matte-finish'] %}"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "thumbfin_buybox_note",
+        "description"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "media_position": "left",
+        "gallery_layout": "stacked",
+        "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "image_zoom": "lightbox",
+        "hide_variants": true,
+        "enable_video_looping": false
+      }
+    },
+    "thumbfin_product_extras": {
+      "type": "thumbfin-product-extras",
+      "blocks": {
+        "ticker_1": {
+          "type": "ticker",
+          "settings": {
+            "highlight": "Zero-damage",
+            "text": "suction mount"
+          }
+        },
+        "ticker_2": {
+          "type": "ticker",
+          "settings": {
+            "highlight": "Repositionable",
+            "text": "anytime"
+          }
+        },
+        "ticker_3": {
+          "type": "ticker",
+          "settings": {
+            "highlight": "6 colors",
+            "text": "one fit"
+          }
+        },
+        "ticker_4": {
+          "type": "ticker",
+          "settings": {
+            "highlight": "Patented",
+            "text": "since day one"
+          }
+        },
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "heading": "Clean the surface",
+            "text": "Wipe the spot and the suction cup with a soft cloth. Matte finish? Apply the contact paper first."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "heading": "Press it on",
+            "text": "Place it where your thumb naturally rests and press firmly. Move it anytime: no screws, no adhesive."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "heading": "Play, relaxed",
+            "text": "Your thumb rests in a relaxed, natural position, so you can focus on your playing, not your hand."
+          }
+        }
+      },
+      "block_order": [
+        "ticker_1",
+        "ticker_2",
+        "ticker_3",
+        "ticker_4",
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
+      "settings": {
+        "video": "https://www.youtube.com/watch?v=Y_QRGtpZdyI",
+        "video_poster": "shopify://shop_images/BULLY_VIDEO.png"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "thumbfin_product_extras"
+  ]
+}
