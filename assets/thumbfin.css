@@ -257,18 +257,6 @@
 .tfr .tfr-learn-more:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 2px; }
 .tfr .tfr-learn-more--start { align-self: flex-start; }
 
-/* Colour links between the Original's per-colour products (snippets/thumbfin-sibling-swatches.liquid) */
-.tfr.tfr-sibling-swatches { background: transparent; margin: 4px 0 18px; font-size: 15px; }
-.tfr.tfr-sibling-swatches .tfr-swatch-row { gap: 12px; }
-.tfr.tfr-sibling-swatches a.tfr-swatch { display: block; }
-.tfr.tfr-sibling-swatches .tfr-swatch.is-current { border-color: var(--tfr-panel); box-shadow: 0 0 0 2px var(--tfr-neon); }
-.tfr.tfr-sibling-swatches .tfr-swatch.is-unavailable { opacity: .35; }
-.tfr.tfr-sibling-swatches .tfr-swatch.is-unavailable::after {
-  content: ''; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px;
-  background: var(--tfr-cream); transform: translateX(-50%) rotate(45deg);
-}
-.tfr.tfr-sibling-swatches a.tfr-swatch:focus-visible { outline: 2px solid var(--tfr-cream); outline-offset: 4px; }
-
 /* Sticky Add to cart bar, phones only (snippets/thumbfin-sticky-atc.liquid) */
 .tfr.tfr-sticky-atc { display: none; }
 @media (max-width: 749px) {

@@ -64,12 +64,6 @@
             "custom_liquid": "{% render 'thumbfin-buybox-note', product: product, combo: all_products['combo-3-pack-one-of-each-version'], addon: all_products['contact-paper-for-matte-finish'] %}"
           }
         },
-        "thumbfin_sibling_swatches": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": "{% render 'thumbfin-sibling-swatches', product: product, handles: 'thumb-fin-black,thumb-fin-neon,thumb-fin-red,thumb-fin-sky-blue,thumb-fin-yellow,thumb-fin-pink' %}"
-          }
-        },
         "thumbfin_sticky_atc": {
           "type": "custom_liquid",
           "settings": {
@@ -82,7 +76,6 @@
         "title",
         "judge_me_reviews_preview_badge_yzV9Vg",
         "price",
-        "thumbfin_sibling_swatches",
         "variant_picker",
         "quantity_selector",
         "buy_buttons",

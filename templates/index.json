@@ -12,7 +12,7 @@
     "thumbfin_hero": {
       "type": "thumbfin-hero",
       "settings": {
-        "price_product": "thumb-fin-black",
+        "price_product": "thumb-fin-original",
         "image": "shopify://shop_images/IMG_0004.jpg",
         "rating_suffix": "reviews"
       }
@@ -96,15 +96,8 @@
           "type": "version",
           "settings": {
             "title": "Original",
-            "products": [
-              "thumb-fin-black",
-              "thumb-fin-neon",
-              "thumb-fin-red",
-              "thumb-fin-sky-blue",
-              "thumb-fin-yellow",
-              "thumb-fin-pink"
-            ],
-            "description": "The first Thumb Fin shape, and our tallest profile."
+            "description": "The first Thumb Fin shape, and our tallest profile.",
+            "product": "thumb-fin-original"
           }
         },
         "version_low_profile": {
@@ -131,7 +124,7 @@
       ],
       "settings": {
         "combo_product": "combo-3-pack-one-of-each-version",
-        "single_product": "thumb-fin-black",
+        "single_product": "thumb-fin-original",
         "addon_product": "contact-paper-for-matte-finish"
       }
     },
