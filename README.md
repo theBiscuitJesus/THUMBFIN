@@ -8,10 +8,27 @@ The baseline commits hold the unmodified export, so `git diff` against it shows 
 | --- | --- |
 | `sections/thumbfin-home.liquid` | **New.** The redesigned homepage as one section |
 | `templates/index.json` | New section added at the top. The sections it replaces are **hidden, not deleted**: the "Experience Playing Like Never Before" rich text, the Judge.me carousel section (moved into the new section), the "Not sure which one?" Combo text, the featured Combo product and the video. The photo banner, Instagram heading + Instafeed, featured products, About and blog stay. Featured products, About and blog switched to the new dark colour scheme |
-| `config/settings_data.json` | Adds one colour scheme, **"scheme-thumbfin"** (walnut `#241408` background, cream `#f4ecdd` text, neon `#c3ff5c` buttons). Existing schemes are untouched |
+| `config/settings_data.json` | **Site-wide restyle.** The theme's five built-in colour schemes are recoloured to the redesign palette (see below), fonts changed from Assistant to Oswald (headings) + Work Sans (body), and buttons, inputs, cards, images and pop-ups get slightly rounded corners (3–6px). Also adds "scheme-thumbfin" |
 | `sections/header-group.json`, `sections/footer-group.json` | Announcement bar, header, menu and footer switched to the new scheme |
 
-## What the section does
+## Every page gets the new look
+
+Dawn draws every page from the same global colour schemes and fonts, so the redesign is applied there once instead of copied into each template. Every template in `templates/` picks it up:
+home, product (both templates), collection, all collections, cart and cart pop-up, search, blog, article, standard page, contact, collabs, 404, password, gift card, and the customer account pages (login, register, account, orders, addresses, reset/activate password).
+
+| Scheme (as named in the editor) | Used for | Now |
+| --- | --- | --- |
+| Background 1 | Page background on every page, cart pop-up | Walnut `#241408`, cream text, neon buttons |
+| Background 2 | Product / collection / blog cards | Panel brown `#2f1c0e`, cream text, neon buttons |
+| Inverse | Sold-out badge, image banner | Dark `#1a0e05`, cream text |
+| Accent 1 | Accent | Brass `#cf9d3e`, dark text |
+| Accent 2 | Sale badge | Neon `#c3ff5c`, dark text |
+
+All five pass WCAG AA contrast for text and buttons (lowest is 7.7:1; AA needs 4.5:1). The pages keep their existing content and layout; only the look changes. The homepage is the one page whose content was rebuilt.
+
+**Not controlled by the theme:** checkout and Shopify's new customer accounts are styled under Settings → Checkout → Customize. App widgets use their own colour settings (see checklist).
+
+## What the homepage section does
 
 Hero (pain-point headline, rating badge, dual CTA, your existing hero photo) → trust strip → 3-step "how it works" → single-product spotlight with colour swatches → Combo 3-Pack + contact-paper cross-sell → **your real Judge.me reviews** → your demo video with its existing cover image.
 
@@ -48,7 +65,10 @@ zip -r thumbfin-theme-redesign.zip assets blocks config layout locales sections 
 - [ ] Look at the header on the dark background. If the logo is hard to see, change *Header* and *Announcement bar* back to their old colour scheme ("Accent 2", your blue) in the editor, or upload a light version of the logo.
 - [ ] Check the hero photo. It uses `IMG_0004.jpg`, the first slide of the old slideshow, cropped to fit. Swap it under *Hero image* if another photo crops better.
 - [ ] Confirm the rating badge. If it shows the fallback 4.84 / 145, Judge.me isn't syncing to Shopify's review metafields. Either turn that on in Judge.me's settings or keep the text settings up to date.
-- [ ] Look at the Instagram block. The heading and Instafeed widget were left on your white scheme so they stay together as one band. If you'd rather have it dark, set the heading's colour scheme to "scheme-thumbfin"; Instafeed's own colours are set in the Instafeed app.
+- [ ] Click through the other pages in preview: a product, a collection, the cart, search, a blog post, the contact page and a standard page.
+- [ ] **Judge.me on the product page** (review widget and star badge): if any text is dark-on-dark, go to Judge.me → Settings → Widget and set text to light, or pick its dark theme.
+- [ ] **Withdrawal (Widerruf) form on standard pages** keeps its own white box. That's readable; restyle it in that app's block settings if you want it dark.
+- [ ] **Checkout:** match it under Settings → Checkout → Customize (background `#241408`, accent `#c3ff5c`) if you want the new look to carry through.
 - [ ] Check on a phone.
 - [ ] **Publish.** Themes → the uploaded copy → Publish.
 
