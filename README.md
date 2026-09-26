@@ -1,13 +1,13 @@
 # Thumb Fin — Shopify theme (homepage redesign)
 
-This repo is the thumbfin.com theme (**Dawn 12.0.0**, exported 25 Sep 2026) with the homepage redesign from `docs/thumbfin-redesign.html` built in. The original brief is in `docs/thumbfin-redesign-notes.md`.
+This repo is the thumbfin.com theme (**Dawn 12.0.0**, live "Thumb Fin" theme exported 25 Sep 2026) with the homepage redesign from `docs/thumbfin-redesign.html` built in. The original brief is in `docs/thumbfin-redesign-notes.md`.
 
-The first theme commit is the unmodified export, so `git diff` against it shows exactly what the redesign changed:
+The baseline commits hold the unmodified export, so `git diff` against it shows exactly what the redesign changed:
 
 | File | Change |
 | --- | --- |
 | `sections/thumbfin-home.liquid` | **New.** The redesigned homepage as one section |
-| `templates/index.json` | New section added at the top. The sections it replaces (slideshow, featured Combo product, Judge.me carousel section, Combo rich text, video, "Ergonomic. Adjustable. Universal." rich text) are **hidden, not deleted**. Remaining homepage sections switched to the new dark colour scheme |
+| `templates/index.json` | New section added at the top. The sections it replaces are **hidden, not deleted**: the "Experience Playing Like Never Before" rich text, the Judge.me carousel section (moved into the new section), the "Not sure which one?" Combo text, the featured Combo product and the video. The photo banner, Instagram heading + Instafeed, featured products, About and blog stay. Featured products, About and blog switched to the new dark colour scheme |
 | `config/settings_data.json` | Adds one colour scheme, **"scheme-thumbfin"** (walnut `#241408` background, cream `#f4ecdd` text, neon `#c3ff5c` buttons). Existing schemes are untouched |
 | `sections/header-group.json`, `sections/footer-group.json` | Announcement bar, header, menu and footer switched to the new scheme |
 
@@ -48,6 +48,7 @@ zip -r thumbfin-theme-redesign.zip assets blocks config layout locales sections 
 - [ ] Look at the header on the dark background. If the logo is hard to see, change *Header* and *Announcement bar* back to their old colour scheme ("Accent 2", your blue) in the editor, or upload a light version of the logo.
 - [ ] Check the hero photo. It uses `IMG_0004.jpg`, the first slide of the old slideshow, cropped to fit. Swap it under *Hero image* if another photo crops better.
 - [ ] Confirm the rating badge. If it shows the fallback 4.84 / 145, Judge.me isn't syncing to Shopify's review metafields. Either turn that on in Judge.me's settings or keep the text settings up to date.
+- [ ] Look at the Instagram block. The heading and Instafeed widget were left on your white scheme so they stay together as one band. If you'd rather have it dark, set the heading's colour scheme to "scheme-thumbfin"; Instafeed's own colours are set in the Instafeed app.
 - [ ] Check on a phone.
 - [ ] **Publish.** Themes → the uploaded copy → Publish.
 
