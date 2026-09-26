@@ -255,3 +255,4 @@
 }
 .tfr .tfr-learn-more:hover { text-decoration-color: var(--tfr-neon); }
 .tfr .tfr-learn-more:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 2px; }
+.tfr .tfr-learn-more--start { align-self: flex-start; }

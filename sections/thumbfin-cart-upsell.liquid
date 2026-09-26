@@ -70,7 +70,8 @@
               save_label: section.settings.save_label,
               add_label: section.settings.add_label,
               uid: section.id,
-              ajax: false
+              ajax: false,
+              learn_label: section.settings.learn_label
             -%}
           {%- endif -%}
         </div>
@@ -144,6 +145,12 @@
       "id": "add_label",
       "label": "Add to cart label",
       "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "learn_label",
+      "label": "Product page link label",
+      "default": "Learn more"
     }
   ],
   "presets": [

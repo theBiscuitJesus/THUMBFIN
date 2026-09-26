@@ -13,6 +13,7 @@
   - units: {number} how many singles the pack replaces (for the compare line)
   - save_label: {string} fixed savings tag text, overriding the calculated one
   - add_label: {string} button label (default 'Add to cart')
+  - learn_label: {string} when set, adds a link with this text to the product page
   - uid: {string} unique id for form controls
   - ajax: {boolean} false posts a plain form (page reloads to the cart) instead of
     using Dawn's <product-form> + cart notification. Default true.
@@ -82,4 +83,9 @@
     {%- endif -%}
   {%- endform -%}
   {%- if ajax != false -%}</product-form>{%- endif -%}
+  {%- if learn_label != blank -%}
+    <a class="tfr-learn-more tfr-learn-more--start" href="{{ product.url }}">
+      {{- learn_label | escape }}<span class="tfr-visually-hidden"> about {{ product.title | escape }}</span> <span aria-hidden="true">→</span>
+    </a>
+  {%- endif -%}
 </div>
