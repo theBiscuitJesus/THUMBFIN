@@ -39,7 +39,7 @@
       {%- if section.blocks.size > 0 -%}
         <div class="tfr-versions">
           {%- for block in section.blocks -%}
-            {%- render 'thumbfin-version-card', block: block, swatch_lines: swatch_lines, add_label: section.settings.add_label -%}
+            {%- render 'thumbfin-version-card', block: block, swatch_lines: swatch_lines, add_label: section.settings.add_label, learn_label: section.settings.learn_label -%}
           {%- endfor -%}
         </div>
       {%- endif -%}
@@ -85,6 +85,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Pick your Thumb Fin" },
     { "type": "text", "id": "text", "label": "Text", "default": "Three shapes, six colors. Every one mounts by suction, no tools." },
     { "type": "text", "id": "add_label", "label": "Add to cart label", "default": "Add to cart" },
+    { "type": "text", "id": "learn_label", "label": "Product page link label", "default": "Learn more" },
     { "type": "textarea", "id": "swatch_colors", "label": "Swatch colours", "info": "One per line as Colour name: #hex. Matched against variant names and product titles. Empty uses Black, Neon, Red, Sky Blue, Yellow and Pink." },
     { "type": "header", "content": "Combo and add-on" },
     { "type": "product", "id": "combo_product", "label": "Combo pack", "info": "Falls back to the product with handle combo-3-pack-one-of-each-version." },

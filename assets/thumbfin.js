@@ -37,6 +37,10 @@
             : button.dataset.labelSoldOut;
         }
 
+        if (data.url) {
+          this.querySelectorAll('[data-tfr-product-link]').forEach((link) => { link.href = data.url; });
+        }
+
         const image = this.querySelector('.tfr-spot-img');
         if (image && data.image) {
           image.removeAttribute('srcset');

@@ -11,6 +11,8 @@
   - block: {block} the "version" block (settings: title, description, product, products, image)
   - swatch_lines: {array} "Name: #hex" lines
   - add_label: {string}
+  - learn_label: {string} text of the link to the product page (default 'Learn more');
+    the link, photo and name follow the selected colour
 {%- endcomment -%}
 {%- liquid
   assign product = block.settings.product
@@ -39,6 +41,11 @@
   endif
 
   assign title = block.settings.title | default: product.title
+  if use_list
+    assign current_url = product.url
+  else
+    assign current_url = current.url
+  endif
   assign current_image = current.featured_media.preview_image | default: product.featured_media.preview_image
   if block.settings.image != blank
     assign current_image = block.settings.image
@@ -46,14 +53,14 @@
 -%}
 {%- if product != blank -%}
 <thumbfin-spotlight class="tfr-version-card" {{ block.shopify_attributes }}>
-  <div class="tfr-version-media">
+  <a class="tfr-version-media" href="{{ current_url }}" data-tfr-product-link tabindex="-1" aria-hidden="true">
     {%- if current_image != blank -%}
-      {{ current_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 700', sizes: '(max-width: 820px) 90vw, 340px', alt: title, class: 'tfr-spot-img' }}
+      {{ current_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 700', sizes: '(max-width: 820px) 90vw, 340px', alt: '', class: 'tfr-spot-img' }}
     {%- else -%}
-      <div class="tfr-fin-disc" aria-hidden="true"><div class="tfr-fin-stem"></div></div>
+      <div class="tfr-fin-disc"><div class="tfr-fin-stem"></div></div>
     {%- endif -%}
-  </div>
-  <h3>{{ title | escape }}</h3>
+  </a>
+  <h3><a class="tfr-card-link" href="{{ current_url }}" data-tfr-product-link>{{ title | escape }}</a></h3>
   <div class="tfr-price-row">
     <span class="tfr-price" data-tfr-price>{{ current.price | money_without_trailing_zeros }}</span>
     <s class="tfr-compare" data-tfr-compare>{% if current.compare_at_price > current.price %}{{ current.compare_at_price | money_without_trailing_zeros }}{% endif %}</s>
@@ -103,6 +110,7 @@
                 data-compare="{% if v.compare_at_price > v.price %}{{ v.compare_at_price | money_without_trailing_zeros | escape }}{% endif %}"
                 data-available="{{ p.available }}"
                 data-title="{{ swatch_name | escape }}"
+                data-url="{{ p.url }}"
                 data-image="{% if swatch_image %}{{ swatch_image | image_url: width: 700 }}{% endif %}"
               >
               <label for="tfr-{{ block.id }}-{{ v.id }}" class="tfr-swatch" title="{{ swatch_name | escape }}"{% if swatch_hex != blank %} style="--tfr-swatch: {{ swatch_hex }};"{% endif %}>
@@ -129,6 +137,7 @@
                 data-compare="{% if v.compare_at_price > v.price %}{{ v.compare_at_price | money_without_trailing_zeros | escape }}{% endif %}"
                 data-available="{{ v.available }}"
                 data-title="{{ v.title | escape }}"
+                data-url="{{ v.url }}"
                 data-image="{% if swatch_image %}{{ swatch_image | image_url: width: 700 }}{% endif %}"
               >
               <label for="tfr-{{ block.id }}-{{ v.id }}" class="tfr-swatch" title="{{ v.title | escape }}"{% if swatch_hex != blank %} style="--tfr-swatch: {{ swatch_hex }};"{% endif %}>
@@ -143,7 +152,7 @@
       <select class="tfr-select" id="tfr-{{ block.id }}-variant" name="id" data-tfr-variant-input>
         {%- for v in product.variants -%}
           <option value="{{ v.id }}" {% if v.id == current.id %}selected{% endif %} {% unless v.available %}disabled{% endunless %}
-            data-price="{{ v.price | money_without_trailing_zeros | escape }}" data-available="{{ v.available }}" data-title="{{ v.title | escape }}">
+            data-price="{{ v.price | money_without_trailing_zeros | escape }}" data-available="{{ v.available }}" data-title="{{ v.title | escape }}" data-url="{{ v.url }}">
             {{- v.title | escape }}{% unless v.available %} (sold out){% endunless -%}
           </option>
         {%- endfor -%}
@@ -165,5 +174,8 @@
     </div>
   {%- endform -%}
   </product-form>
+  <a class="tfr-learn-more" href="{{ current_url }}" data-tfr-product-link>
+    {{- learn_label | default: 'Learn more' | escape }}<span class="tfr-visually-hidden"> about {{ title | escape }}</span> <span aria-hidden="true">→</span>
+  </a>
 </thumbfin-spotlight>
 {%- endif -%}
