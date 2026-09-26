@@ -18,8 +18,8 @@
   color: #1a0e05 !important;
 }
 /* Secondary lines (product name, dates) slightly softer but still dark */
-.jdgm-popup-card__prod-title,
-.jdgm-popup-card__prod-title *,
+.jdgm-popup-card .jdgm-popup-card__prod-title,
+.jdgm-popup-card .jdgm-popup-card__prod-title *:not(.jdgm-star),
 .jdgm-revs-tab__content .jdgm-rev__timestamp {
   color: #5a4632 !important;
 }
