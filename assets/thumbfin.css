@@ -271,3 +271,23 @@
   .tfr.tfr-sticky-atc .tfr-btn { padding: 10px 20px; font-size: 15px; white-space: nowrap; }
   body.tfr-has-sticky-atc { padding-bottom: 72px; }
 }
+
+/* FAQ accordion (sections/thumbfin-faq.liquid) */
+.tfr .tfr-faq-list { border-top: 1px solid var(--tfr-line); max-width: 820px; }
+.tfr .tfr-faq-item { border-bottom: 1px solid var(--tfr-line); }
+.tfr .tfr-faq-item summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 18px 0; cursor: pointer; list-style: none; min-height: 44px;
+}
+.tfr .tfr-faq-item summary::-webkit-details-marker { display: none; }
+.tfr .tfr-faq-item summary h3 { font-size: 18px; }
+.tfr .tfr-faq-item summary::after {
+  content: '+'; flex: none; font-family: var(--tfr-font-heading); font-size: 24px; line-height: 1; color: var(--tfr-brass);
+  transition: transform .2s;
+}
+.tfr .tfr-faq-item[open] summary::after { transform: rotate(45deg); }
+.tfr .tfr-faq-item summary:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 4px; }
+.tfr .tfr-faq-answer { color: var(--tfr-muted); padding: 0 0 20px; max-width: 68ch; }
+.tfr .tfr-faq-answer p + p { margin-top: 10px; }
+.tfr .tfr-faq-answer a { color: var(--tfr-neon); text-underline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .tfr .tfr-faq-item summary::after { transition: none; } }

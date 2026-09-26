@@ -199,11 +199,70 @@
         "video": "https://www.youtube.com/watch?v=Y_QRGtpZdyI",
         "video_poster": "shopify://shop_images/BULLY_VIDEO.png"
       }
+    },
+    "thumbfin_faq": {
+      "type": "thumbfin-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Will Thumb Fin damage my bass?",
+            "answer": "<p>No. Thumb Fin mounts with a suction cup, so there's no drilling, no screws and no adhesive. It comes off without leaving a mark, and you can move it to another instrument anytime.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Does it work on matte or satin finishes?",
+            "answer": "<p>The suction cup needs a smooth, non-porous surface. On gloss finishes and pickguards it sticks directly. For matte or satin finishes, apply our <a href=\"/products/contact-paper-for-matte-finish\">contact paper</a> first to give it a surface to grip.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Where should I put my thumb rest?",
+            "answer": "<p>Wherever your thumb naturally rests while you play. Many players mount it on the pickguard. Because it's suction-mounted, you can try a spot, play for a while, and move it until it feels right.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Which version should I choose?",
+            "answer": "<p>The Original is the first Thumb Fin shape and our tallest profile. The Low Profile sits 4mm lower. The Contoured Low Profile is also 4mm lower, with more concave sides. Not sure? The <a href=\"/products/combo-3-pack-one-of-each-version\">Combo 3 Pack</a> includes one of each.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Does it work on guitar too?",
+            "answer": "<p>Yes. Thumb Fin works on bass, guitar, ukulele and more. Anywhere with a smooth surface where your thumb wants to rest.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "How do I keep it holding well?",
+            "answer": "<p>Wipe the spot and the suction cup clean, then press it on firmly. If it ever starts to lose grip, clean both surfaces again and re-press it.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6"
+      ],
+      "settings": {
+        "heading": "Bass thumb rest FAQ"
+      }
     }
   },
   "order": [
     "main",
     "thumbfin_product_extras",
+    "thumbfin_faq",
     "related-products",
     "17116657201716e134"
   ]

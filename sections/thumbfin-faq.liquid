@@ -1,0 +1,68 @@
+{%- comment -%}
+  Thumb Fin redesign: FAQ accordion. Each question is a block. Also outputs
+  FAQPage structured data (JSON-LD) built from the same blocks, so what search
+  engines read always matches what's on the page.
+  Use at most one FAQ section per page (one FAQPage per page).
+{%- endcomment -%}
+{{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+{%- assign faq_blocks = section.blocks | where: 'type', 'question' -%}
+{%- if faq_blocks.size > 0 -%}
+  <div class="tfr">
+    <section class="tfr-section" id="thumbfin-faq">
+      <div class="tfr-wrap tfr-faq">
+        <div class="tfr-section-head">
+          <h2>{{ section.settings.heading | escape }}</h2>
+          {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+        </div>
+        <div class="tfr-faq-list">
+          {%- for block in faq_blocks -%}
+            <details class="tfr-faq-item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
+              <summary><h3>{{ block.settings.question | escape }}</h3></summary>
+              <div class="tfr-faq-answer">{{ block.settings.answer }}</div>
+            </details>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for block in faq_blocks -%}
+          {
+            "@type": "Question",
+            "name": {{ block.settings.question | json }},
+            "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | strip_html | strip | json }} }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Thumb Fin FAQ",
+  "tag": "div",
+  "class": "section-thumbfin-faq",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Bass thumb rest FAQ" },
+    { "type": "text", "id": "text", "label": "Text" },
+    { "type": "checkbox", "id": "open_first", "label": "Open the first question", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Will Thumb Fin damage my bass?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>No. It mounts with a suction cup, so there's no drilling, no screws and no adhesive.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Thumb Fin FAQ" }]
+}
+{% endschema %}
