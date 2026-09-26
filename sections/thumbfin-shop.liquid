@@ -1,0 +1,113 @@
+{%- comment -%}
+  Thumb Fin redesign: homepage shop. One card per Thumb Fin version (blocks), each
+  with colour swatches and Add to cart, then the Combo 3-Pack (with live savings)
+  and the contact-paper add-on.
+{%- endcomment -%}
+{%- liquid
+  if section.settings.swatch_colors != blank
+    assign swatch_lines = section.settings.swatch_colors | newline_to_br | split: '<br />'
+  else
+    assign swatch_lines = 'Black: #171717|Neon: #c3ff5c|Red: #c23b3b|Sky Blue: #5fb8e0|Yellow: #e8c93f|Pink: #e07bb0' | split: '|'
+  endif
+
+  assign combo = section.settings.combo_product
+  if combo == blank
+    assign combo = all_products['combo-3-pack-one-of-each-version']
+  endif
+  assign addon = section.settings.addon_product
+  if addon == blank
+    assign addon = all_products['contact-paper-for-matte-finish']
+  endif
+
+  assign singles_total = nil
+  if section.settings.single_product != blank
+    assign singles_total = section.settings.single_product.price | times: section.settings.combo_units
+  endif
+-%}
+{{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+
+<div class="tfr">
+  <section class="tfr-section" id="thumbfin-shop">
+    <div class="tfr-wrap">
+      {%- if section.settings.heading != blank or section.settings.text != blank -%}
+        <div class="tfr-section-head">
+          {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+          {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="tfr-versions">
+          {%- for block in section.blocks -%}
+            {%- render 'thumbfin-version-card', block: block, swatch_lines: swatch_lines, add_label: section.settings.add_label -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if combo.id != blank or addon.id != blank -%}
+        <div class="tfr-bundle-row">
+          {%- if combo.id != blank -%}
+            {%- render 'thumbfin-offer-card',
+              product: combo,
+              featured: true,
+              description: section.settings.combo_desc,
+              singles_total: singles_total,
+              units: section.settings.combo_units,
+              save_label: section.settings.save_label,
+              add_label: section.settings.add_label,
+              uid: section.id
+            -%}
+          {%- endif -%}
+          {%- if addon.id != blank -%}
+            {%- render 'thumbfin-offer-card',
+              product: addon,
+              prefix: '+ ',
+              description: section.settings.addon_desc,
+              add_label: section.settings.add_label,
+              uid: section.id
+            -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'thumbfin.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Thumb Fin shop",
+  "tag": "div",
+  "class": "section-thumbfin-shop",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pick your Thumb Fin" },
+    { "type": "text", "id": "text", "label": "Text", "default": "Three shapes, six colors. Every one mounts by suction, no tools." },
+    { "type": "text", "id": "add_label", "label": "Add to cart label", "default": "Add to cart" },
+    { "type": "textarea", "id": "swatch_colors", "label": "Swatch colours", "info": "One per line as Colour name: #hex. Matched against variant names and product titles. Empty uses Black, Neon, Red, Sky Blue, Yellow and Pink." },
+    { "type": "header", "content": "Combo and add-on" },
+    { "type": "product", "id": "combo_product", "label": "Combo pack", "info": "Falls back to the product with handle combo-3-pack-one-of-each-version." },
+    { "type": "product", "id": "single_product", "label": "Single, for savings", "info": "The combo's \"Save $X\" is this price × the number below, minus the combo price." },
+    { "type": "range", "id": "combo_units", "min": 2, "max": 6, "step": 1, "default": 3, "label": "Singles in the combo" },
+    { "type": "textarea", "id": "combo_desc", "label": "Combo description", "default": "One of each version, so you can find your favorite before committing to one." },
+    { "type": "text", "id": "save_label", "label": "Combo savings tag", "info": "Leave empty to calculate it from live prices." },
+    { "type": "product", "id": "addon_product", "label": "Add-on", "info": "Falls back to the product with handle contact-paper-for-matte-finish." },
+    { "type": "textarea", "id": "addon_desc", "label": "Add-on description", "default": "For satin or matte-finish basses — gives the suction cup a surface to grip. Often added with any color." }
+  ],
+  "blocks": [
+    {
+      "type": "version",
+      "name": "Version",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Name", "info": "Leave empty to use the product title." },
+        { "type": "product", "id": "product", "label": "Product with colour options", "info": "For a product whose variants are the colours." },
+        { "type": "product_list", "id": "products", "label": "Or: one product per colour", "limit": 12, "info": "For colours sold as separate products. Overrides the product above." },
+        { "type": "textarea", "id": "description", "label": "Description" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional. Defaults to the selected colour's product image." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Thumb Fin shop" }]
+}
+{% endschema %}

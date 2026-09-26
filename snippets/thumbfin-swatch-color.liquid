@@ -1,0 +1,23 @@
+{%- comment -%}
+  Thumb Fin redesign: looks up a swatch colour by name. Outputs "Name|#hex"
+  (both empty when nothing matches), for use with capture + split: '|'.
+
+  Accepts:
+  - name: {string} a colour name ("Sky Blue") or a product title that contains
+    one ("Thumb Fin (Sky Blue) Thumb Rest")
+  - lines: {array} "Name: #hex" lines from the section's "Swatch colours" setting
+{%- endcomment -%}
+{%- liquid
+  assign haystack = name | handleize | prepend: '-' | append: '-'
+  assign found_name = ''
+  assign found_hex = ''
+  for line in lines
+    assign pair = line | split: ':'
+    assign pair_key = pair.first | strip | handleize | prepend: '-' | append: '-'
+    if pair_key != '--' and haystack contains pair_key
+      assign found_name = pair.first | strip
+      assign found_hex = pair.last | strip
+    endif
+  endfor
+-%}
+{{- found_name }}|{{ found_hex -}}

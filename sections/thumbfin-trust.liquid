@@ -1,0 +1,37 @@
+{%- comment -%}
+  Thumb Fin redesign: trust strip ("Zero-damage suction mount" · ...).
+{%- endcomment -%}
+{{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+{%- assign ticker_blocks = section.blocks | where: 'type', 'ticker' -%}
+<div class="tfr">
+  {%- render 'thumbfin-ticker', blocks: ticker_blocks -%}
+</div>
+
+{% schema %}
+{
+  "name": "Thumb Fin trust strip",
+  "tag": "div",
+  "class": "section-thumbfin-trust",
+  "blocks": [
+    {
+      "type": "ticker",
+      "name": "Item",
+      "settings": [
+        { "type": "text", "id": "highlight", "label": "Highlighted text", "default": "Zero-damage" },
+        { "type": "text", "id": "text", "label": "Text", "default": "suction mount" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Thumb Fin trust strip",
+      "blocks": [
+        { "type": "ticker", "settings": { "highlight": "Zero-damage", "text": "suction mount" } },
+        { "type": "ticker", "settings": { "highlight": "Repositionable", "text": "anytime" } },
+        { "type": "ticker", "settings": { "highlight": "6 colors", "text": "one fit" } },
+        { "type": "ticker", "settings": { "highlight": "Patented", "text": "since day one" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

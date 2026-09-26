@@ -223,3 +223,25 @@
 .tfr .tfr-section--compact .tfr-section-head { margin-bottom: 8px; }
 .tfr .tfr-bundle-row:first-child { margin-top: 0; }
 .tfr .tfr-section-head + .tfr-bundle-row { margin-top: 26px; }
+
+/* Homepage shop: one card per version (snippets/thumbfin-version-card.liquid) */
+.tfr .tfr-versions { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; }
+.tfr .tfr-version-card {
+  display: flex; flex-direction: column; background: var(--tfr-panel); border: 1px solid var(--tfr-line);
+  border-radius: 6px; padding: 22px;
+}
+.tfr .tfr-version-media {
+  aspect-ratio: 1 / 1; margin: -4px -4px 18px; border-radius: 4px; overflow: hidden;
+  background: var(--tfr-panel-2); display: flex; align-items: center; justify-content: center;
+}
+.tfr .tfr-version-media img { width: 100%; height: 100%; object-fit: cover; }
+.tfr .tfr-version-media .tfr-fin-disc { width: 160px; height: 160px; }
+.tfr .tfr-version-media .tfr-fin-stem { width: 42px; height: 62px; }
+.tfr .tfr-version-card h3 { font-size: 20px; }
+.tfr .tfr-version-card .tfr-price-row { margin: 6px 0 12px; }
+.tfr .tfr-version-card .tfr-price { font-size: 26px; }
+.tfr .tfr-version-card .tfr-desc { font-size: 15px; margin-bottom: 16px; }
+.tfr .tfr-version-card .tfr-swatches { margin-bottom: 18px; }
+.tfr .tfr-version-card product-form { margin-top: auto; }
+.tfr .tfr-version-card .tfr-btn { width: 100%; }
+.tfr .tfr-bundle-card .tfr-option-label { display: block; margin: 0 0 6px; }

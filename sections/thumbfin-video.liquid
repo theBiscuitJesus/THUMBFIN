@@ -1,0 +1,31 @@
+{%- comment -%}
+  Thumb Fin redesign: click-to-load demo video.
+{%- endcomment -%}
+{{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+<div class="tfr">
+  {%- render 'thumbfin-video',
+    video: section.settings.video,
+    poster: section.settings.poster,
+    heading: section.settings.heading,
+    text: section.settings.text,
+    button_label: section.settings.button_label,
+    anchor: 'thumbfin-video'
+  -%}
+</div>
+<script src="{{ 'thumbfin.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Thumb Fin video",
+  "tag": "div",
+  "class": "section-thumbfin-video",
+  "settings": [
+    { "type": "video_url", "id": "video", "accept": ["youtube", "vimeo"], "label": "Video", "info": "Leave empty to use the existing demo (youtube.com/watch?v=Y_QRGtpZdyI)." },
+    { "type": "image_picker", "id": "poster", "label": "Cover image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "See it mounted on a real bass" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Watch the two-minute demo — attaching, repositioning, and a full playing session with Thumb Fin." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Watch demo" }
+  ],
+  "presets": [{ "name": "Thumb Fin video" }]
+}
+{% endschema %}

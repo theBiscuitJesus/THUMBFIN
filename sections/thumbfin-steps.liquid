@@ -1,0 +1,40 @@
+{%- comment -%}
+  Thumb Fin redesign: "Three steps, no tools".
+{%- endcomment -%}
+{{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+{%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
+<div class="tfr">
+  {%- render 'thumbfin-steps', blocks: step_blocks, heading: section.settings.heading, text: section.settings.text, anchor: 'thumbfin-how' -%}
+</div>
+
+{% schema %}
+{
+  "name": "Thumb Fin steps",
+  "tag": "div",
+  "class": "section-thumbfin-steps",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Three steps, no tools" },
+    { "type": "text", "id": "text", "label": "Text", "default": "Most thumb rests mean drilling into your instrument. Thumb Fin doesn't." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Press it on" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "The suction cup grips any gloss or satin finish — no adhesive residue, ever." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Thumb Fin steps",
+      "blocks": [
+        { "type": "step", "settings": { "heading": "Press it on", "text": "The suction cup grips any gloss or satin finish — no adhesive residue, ever." } },
+        { "type": "step", "settings": { "heading": "Place it right", "text": "Slide it into your exact hand position, above or below the strings." } },
+        { "type": "step", "settings": { "heading": "Play, relaxed", "text": "A biomechanically neutral thumb position means less tendon strain, longer sets." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

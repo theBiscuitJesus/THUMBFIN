@@ -60,11 +60,11 @@
     {%- if product.has_only_default_variant -%}
       <input type="hidden" name="id" value="{{ current.id }}">
     {%- else -%}
-      <label class="tfr-visually-hidden" for="tfr-{{ uid }}-{{ product.id }}">{{ product.options | join: ' / ' | escape }}</label>
+      <label class="tfr-option-label" for="tfr-{{ uid }}-{{ product.id }}">{{ product.options | join: ' / ' | capitalize | escape }}</label>
       <select class="tfr-select" id="tfr-{{ uid }}-{{ product.id }}" name="id">
         {%- for variant in product.variants -%}
           <option value="{{ variant.id }}" {% if variant.id == current.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
-            {{- variant.title | escape }} — {{ variant.price | money_without_trailing_zeros }}{% unless variant.available %} (sold out){% endunless -%}
+            {{- variant.title | escape }}{% if product.price_varies %} — {{ variant.price | money_without_trailing_zeros }}{% endif %}{% unless variant.available %} (sold out){% endunless -%}
           </option>
         {%- endfor -%}
       </select>
