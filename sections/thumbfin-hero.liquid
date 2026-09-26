@@ -18,7 +18,7 @@
         {%- endif -%}
         <h1>
           {{- section.settings.heading | escape -}}
-          {%- if section.settings.heading_line_2 != blank -%}<br>{{ section.settings.heading_line_2 | escape }}{%- endif -%}
+          {%- if section.settings.heading_line_2 != blank %} <br>{{ section.settings.heading_line_2 | escape }}{%- endif -%}
         </h1>
         {%- if section.settings.text != blank -%}
           <p class="tfr-hero-sub">{{ section.settings.text | escape }}</p>
