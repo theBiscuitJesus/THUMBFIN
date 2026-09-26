@@ -84,8 +84,8 @@
 })();
 
 if (!customElements.get('thumbfin-sticky-atc')) {
-  // Phone-only Add to cart bar (snippets/thumbfin-sticky-atc.liquid). Shows while the
-  // page's real Add to cart button is off screen and forwards clicks to it.
+  // Phone-only Add to cart bar (snippets/thumbfin-sticky-atc.liquid). Shows once the
+  // page's real Add to cart button has scrolled above the screen, and forwards clicks to it.
   customElements.define('thumbfin-sticky-atc', class extends HTMLElement {
     connectedCallback() {
       // Move to <body> so no product-info layout rule can clip or reposition the bar;
@@ -97,7 +97,7 @@ if (!customElements.get('thumbfin-sticky-atc')) {
       if (this._bound) return;
       this._bound = true;
       this.target = document.getElementById(this.dataset.target);
-      if (!this.target || !('IntersectionObserver' in window)) return;
+      if (!this.target) return;
 
       this.button = this.querySelector('[data-sticky-button]');
       this.button.addEventListener('click', () => this.target.click());
@@ -113,11 +113,24 @@ if (!customElements.get('thumbfin-sticky-atc')) {
       new MutationObserver(syncState).observe(this.target, { attributes: true, childList: true, subtree: true });
       syncState();
 
-      new IntersectionObserver(([entry]) => {
-        const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      // Checked on every scroll (throttled to one check per frame) rather than with an
+      // IntersectionObserver, which misses fast flicks that jump past the button.
+      let queued = false;
+      const update = () => {
+        queued = false;
+        const show = this.target.getBoundingClientRect().bottom < 0;
+        if (this.hidden === !show) return;
         this.hidden = !show;
         document.body.classList.toggle('tfr-has-sticky-atc', show);
-      }).observe(this.target);
+      };
+      const queue = () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(update);
+      };
+      window.addEventListener('scroll', queue, { passive: true });
+      window.addEventListener('resize', queue, { passive: true });
+      update();
     }
   });
 }
