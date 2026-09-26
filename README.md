@@ -1,5 +1,7 @@
 # Thumb Fin — Shopify theme redesign
 
+**Status: live.** This branch is the published thumbfin.com theme, connected through Shopify's GitHub integration: pushes here go straight to the live store, and edits made in the theme editor are committed back by `shopify[bot]`. Pull before editing, and space out pushes that touch the same file (two pushes seconds apart can sync out of order).
+
 This repo is the thumbfin.com theme (**Dawn 12.0.0**, live "Thumb Fin" theme exported 25 Sep 2026) with the homepage redesign from `docs/thumbfin-redesign.html` built in. The original brief is in `docs/thumbfin-redesign-notes.md`.
 
 The baseline commits hold the unmodified export, so `git diff` against it shows exactly what the redesign changed:
@@ -100,3 +102,13 @@ zip -r thumbfin-theme-redesign.zip assets blocks config layout locales sections 
 - **The zip is a snapshot of 25 Sep 2026.** Customizer changes made to the live theme after that export won't be in the copy. Settings you edit on the copy are saved in Shopify, not in this repo, unless you use the GitHub integration (Option B), which commits them back.
 - A version product gets swatches when its one option is named *Color*, *Colour*, *Colors* or *Colours*. Any other option setup falls back to a dropdown.
 - On a combo or paper product page, "Complete your setup" offers a single only if *Single Thumb Fin* is picked in the product-extras section. It's left empty because the single comes in three versions.
+
+## Changes after the first preview
+
+- **Header:** light scheme `scheme-thumbfin-light` (`#FFD59A`) so the black logo lettering reads; the announcement bar stays dark.
+- **Announcement bar:** "Try all three versions: save $10 with the Combo 3 Pack" (links to the combo) and "No drilling. No adhesive. Moves between instruments."
+- **Pick your Thumb Fin:** each version card has a description and a "Learn more" link that follows the selected colour; the Combo and contact paper cards have "Learn more" too.
+- **Copy:** the three steps are Clean the surface / Press it on / Play, relaxed. Step 3 and the About Thumb Fin text avoid health claims ("less tendon strain", "joint health") that would need scientific substantiation.
+- **Product pages:** colour swatches linking the Original's six per-colour products (`snippets/thumbfin-sibling-swatches.liquid`, navigation only, so reviews stay per product); Add to cart always in the primary style (`snippets/buy-buttons.liquid`); Judge.me stars under the title; phone-only sticky Add to cart bar (`snippets/thumbfin-sticky-atc.liquid`).
+- **Judge.me:** `assets/thumbfin-apps.css` (loaded site-wide from `layout/theme.liquid`) forces dark text on the white review pop-ups and Reviews side tab.
+- **Settings gotcha:** Dawn's radius settings only accept even numbers. An odd value makes Shopify drop the whole `config/settings_data.json` (no colours, default fonts).
