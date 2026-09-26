@@ -82,3 +82,42 @@
     });
   }
 })();
+
+if (!customElements.get('thumbfin-sticky-atc')) {
+  // Phone-only Add to cart bar (snippets/thumbfin-sticky-atc.liquid). Shows while the
+  // page's real Add to cart button is off screen and forwards clicks to it.
+  customElements.define('thumbfin-sticky-atc', class extends HTMLElement {
+    connectedCallback() {
+      // Move to <body> so no product-info layout rule can clip or reposition the bar;
+      // moving reconnects the element, which runs this callback again.
+      if (this.parentElement !== document.body) {
+        document.body.appendChild(this);
+        return;
+      }
+      if (this._bound) return;
+      this._bound = true;
+      this.target = document.getElementById(this.dataset.target);
+      if (!this.target || !('IntersectionObserver' in window)) return;
+
+      this.button = this.querySelector('[data-sticky-button]');
+      this.button.addEventListener('click', () => this.target.click());
+
+      const syncState = () => {
+        const disabled = this.target.disabled || this.target.getAttribute('aria-disabled') === 'true';
+        this.button.disabled = disabled;
+        const label = this.target.querySelector('span');
+        this.button.textContent = label ? label.textContent.trim() : 'Add to cart';
+        const price = document.querySelector('.product__info-container .price .price-item--last, .product__info-container .price-item--regular');
+        if (price) this.querySelector('[data-price]').textContent = price.textContent.trim();
+      };
+      new MutationObserver(syncState).observe(this.target, { attributes: true, childList: true, subtree: true });
+      syncState();
+
+      new IntersectionObserver(([entry]) => {
+        const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+        this.hidden = !show;
+        document.body.classList.toggle('tfr-has-sticky-atc', show);
+      }).observe(this.target);
+    }
+  });
+}

@@ -1,0 +1,59 @@
+{%- comment -%}
+  Thumb Fin redesign: colour swatches that link between sibling products sold one
+  product per colour (the Original Thumb Fin). Navigation only: each colour stays
+  its own product, with its own reviews and URL.
+
+  Added to main-product as a "Custom liquid" block. Renders nothing on products
+  that aren't in the list.
+
+  Accepts:
+  - product: {product} the product being viewed (required)
+  - handles: {string} comma-separated product handles, in swatch order
+  - label: {string} text before the colour name (default 'Color')
+
+  Usage:
+  {% render 'thumbfin-sibling-swatches', product: product, handles: 'thumb-fin-black,thumb-fin-neon' %}
+{%- endcomment -%}
+{%- liquid
+  assign sibling_handles = handles | split: ','
+  assign is_sibling = false
+  for h in sibling_handles
+    assign clean = h | strip
+    if clean == product.handle
+      assign is_sibling = true
+    endif
+  endfor
+  assign swatch_lines = 'Black: #171717|Neon: #c3ff5c|Red: #c23b3b|Sky Blue: #5fb8e0|Yellow: #e8c93f|Pink: #e07bb0' | split: '|'
+-%}
+{%- if is_sibling -%}
+  {%- capture found -%}{%- render 'thumbfin-swatch-color', name: product.title, lines: swatch_lines -%}{%- endcapture -%}
+  {%- assign current_parts = found | split: '|' -%}
+  {{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+  <nav class="tfr tfr-sibling-swatches" aria-label="{{ label | default: 'Color' | escape }}">
+    <p class="tfr-option-label">{{ label | default: 'Color' | escape }}: <span>{{ current_parts[0] | default: product.title | escape }}</span></p>
+    <div class="tfr-swatch-row">
+      {%- for h in sibling_handles -%}
+        {%- assign sibling_handle = h | strip -%}
+        {%- assign sibling = all_products[sibling_handle] -%}
+        {%- if sibling.id != blank -%}
+          {%- liquid
+            capture found
+              render 'thumbfin-swatch-color', name: sibling.title, lines: swatch_lines
+            endcapture
+            assign parts = found | split: '|'
+            assign swatch_name = parts[0] | default: sibling.title
+          -%}
+          <a
+            href="{{ sibling.url }}"
+            class="tfr-swatch{% if sibling.id == product.id %} is-current{% endif %}{% unless sibling.available %} is-unavailable{% endunless %}"
+            title="{{ swatch_name | escape }}{% unless sibling.available %} (sold out){% endunless %}"
+            {% if parts[1] != blank %}style="--tfr-swatch: {{ parts[1] }};"{% endif %}
+            {% if sibling.id == product.id %}aria-current="page"{% endif %}
+          >
+            <span class="tfr-visually-hidden">{{ swatch_name | escape }}{% unless sibling.available %} (sold out){% endunless %}</span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </nav>
+{%- endif -%}

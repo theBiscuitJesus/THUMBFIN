@@ -1,0 +1,21 @@
+{%- comment -%}
+  Thumb Fin redesign: slim Add to cart bar pinned to the bottom of the screen on
+  phones, shown once the product page's own Add to cart has scrolled out of view.
+  Clicking it clicks the real button, so the chosen variant, Dawn's cart
+  notification and sold-out state all behave exactly as normal.
+
+  Added to main-product as a "Custom liquid" block.
+
+  Accepts:
+  - product: {product} (required)
+  - section_id: {string} the main-product section id (for #ProductSubmitButton-…)
+{%- endcomment -%}
+{{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+<thumbfin-sticky-atc class="tfr tfr-sticky-atc" data-target="ProductSubmitButton-{{ section_id }}" hidden>
+  <div class="tfr-sticky-atc__info">
+    <span class="tfr-sticky-atc__title">{{ product.title | escape }}</span>
+    <span class="tfr-sticky-atc__price" data-price>{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+  </div>
+  <button type="button" class="tfr-btn tfr-btn--primary" data-sticky-button>Add to cart</button>
+</thumbfin-sticky-atc>
+<script src="{{ 'thumbfin.js' | asset_url }}" defer="defer"></script>
