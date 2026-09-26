@@ -1,0 +1,47 @@
+{%- comment -%}
+  Thumb Fin redesign: short upsell note for the product page buy box, under the
+  Add to cart button. Added to main-product as a "Custom liquid" block.
+
+  Accepts:
+  - product: {product} the product being viewed (required)
+  - combo: {product} the Combo 3-Pack
+  - addon: {product} the matte-finish contact paper
+  - units: {number} singles in the combo (default 3)
+
+  Shows nothing on the combo or add-on product pages themselves.
+
+  Usage:
+  {% render 'thumbfin-buybox-note', product: product, combo: all_products['combo-3-pack-one-of-each-version'], addon: all_products['contact-paper-for-matte-finish'] %}
+{%- endcomment -%}
+{%- liquid
+  assign pack_units = units | default: 3
+  assign show_combo = false
+  assign show_addon = false
+  if combo.id != blank and product.id != combo.id and product.id != addon.id
+    assign show_combo = true
+    assign savings = product.price | times: pack_units | minus: combo.price
+  endif
+  if addon.id != blank and product.id != addon.id
+    assign show_addon = true
+  endif
+-%}
+{%- if show_combo or show_addon -%}
+  {{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+  <div class="tfr tfr-buybox-note">
+    {%- if show_combo -%}
+      <p>
+        <strong>Can’t pick a version?</strong>
+        The <a href="{{ combo.url }}">{{ combo.title | escape }}</a> gets you one of each for
+        {{ combo.price | money_without_trailing_zeros -}}
+        {%- if savings > 0 %}, saving {{ savings | money_without_trailing_zeros }}{% endif %}.
+      </p>
+    {%- endif -%}
+    {%- if show_addon -%}
+      <p>
+        <strong>Satin or matte bass?</strong>
+        Add <a href="{{ addon.url }}">{{ addon.title | escape }}</a>
+        ({{ addon.price | money_without_trailing_zeros }}) so the suction cup has a surface to grip.
+      </p>
+    {%- endif -%}
+  </div>
+{%- endif -%}

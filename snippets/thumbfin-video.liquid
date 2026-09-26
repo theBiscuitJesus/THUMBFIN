@@ -1,0 +1,49 @@
+{%- comment -%}
+  Thumb Fin redesign: click-to-load demo video band. Nothing loads from YouTube or
+  Vimeo until the visitor presses play (see <thumbfin-video> in assets/thumbfin.js).
+
+  Accepts:
+  - video: {video_url} setting value; defaults to the existing demo (Y_QRGtpZdyI)
+  - poster: {image} cover image; YouTube's own thumbnail when omitted
+  - heading: {string}
+  - text: {string}
+  - button_label: {string}
+  - anchor: {string} id for the <section>, e.g. 'thumbfin-video'
+{%- endcomment -%}
+{%- liquid
+  assign video_type = 'youtube'
+  assign video_id = 'Y_QRGtpZdyI'
+  if video != blank
+    assign video_type = video.type
+    assign video_id = video.id
+  endif
+  if video_type == 'vimeo'
+    assign watch_url = 'https://vimeo.com/' | append: video_id
+  else
+    assign watch_url = 'https://www.youtube.com/watch?v=' | append: video_id
+  endif
+-%}
+<section class="tfr-section"{% if anchor != blank %} id="{{ anchor }}"{% endif %}>
+  <div class="tfr-wrap">
+    <thumbfin-video class="tfr-video-band" data-video-type="{{ video_type }}" data-video-id="{{ video_id | escape }}">
+      <div class="tfr-video-frame" data-tfr-frame>
+        <a class="tfr-video-facade" href="{{ watch_url }}" data-tfr-play target="_blank" rel="noopener">
+          {%- if poster != blank -%}
+            {{ poster | image_url: width: 1100 | image_tag: loading: 'lazy', alt: '' }}
+          {%- elsif video_type == 'youtube' -%}
+            <img src="https://i.ytimg.com/vi/{{ video_id | escape }}/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">
+          {%- endif -%}
+          <span class="tfr-play"></span>
+          <span class="tfr-visually-hidden">Play video: {{ heading | escape }}</span>
+        </a>
+      </div>
+      <div class="tfr-video-copy">
+        <h2>{{ heading | escape }}</h2>
+        {%- if text != blank -%}<p>{{ text | escape }}</p>{%- endif -%}
+        {%- if button_label != blank -%}
+          <a class="tfr-btn tfr-btn--ghost" href="{{ watch_url }}" data-tfr-play target="_blank" rel="noopener">{{ button_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </thumbfin-video>
+  </div>
+</section>

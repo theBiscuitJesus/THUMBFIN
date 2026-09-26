@@ -1,0 +1,155 @@
+{%- comment -%}
+  Thumb Fin redesign on the cart page: offers the Combo 3-Pack and the contact paper
+  when they aren't already in the cart. Uses plain forms (ajax: false) so adding
+  reloads the cart page with updated items and totals.
+{%- endcomment -%}
+
+{%- liquid
+  assign combo = section.settings.combo_product
+  if combo == blank
+    assign combo = all_products['combo-3-pack-one-of-each-version']
+  endif
+
+  assign addon = section.settings.addon_product
+  if addon == blank
+    assign addon = all_products['contact-paper-for-matte-finish']
+  endif
+
+  assign cart_product_ids = cart.items | map: 'product_id'
+  assign show_combo = false
+  if combo.id != blank
+    unless cart_product_ids contains combo.id
+      assign show_combo = true
+    endunless
+  endif
+  assign show_addon = false
+  if addon.id != blank
+    unless cart_product_ids contains addon.id
+      assign show_addon = true
+    endunless
+  endif
+  assign show_any = false
+  if cart.item_count > 0
+    if show_combo or show_addon
+      assign show_any = true
+    endif
+  endif
+
+  assign singles_total = nil
+  if section.settings.single_product != blank
+    assign singles_total = section.settings.single_product.price | times: section.settings.combo_units
+  endif
+-%}
+
+{%- if show_any -%}
+  {{ 'thumbfin.css' | asset_url | stylesheet_tag }}
+  <div class="tfr">
+    <section class="tfr-section tfr-section--compact" id="thumbfin-cart-upsell">
+      <div class="tfr-wrap">
+        {%- if section.settings.heading != blank -%}
+          <div class="tfr-section-head"><h2>{{ section.settings.heading | escape }}</h2></div>
+        {%- endif -%}
+        <div class="tfr-bundle-row">
+          {%- if show_addon -%}
+            {%- render 'thumbfin-offer-card',
+              product: addon,
+              prefix: '+ ',
+              description: section.settings.addon_desc,
+              add_label: section.settings.add_label,
+              uid: section.id,
+              ajax: false
+            -%}
+          {%- endif -%}
+          {%- if show_combo -%}
+            {%- render 'thumbfin-offer-card',
+              product: combo,
+              featured: true,
+              description: section.settings.combo_desc,
+              singles_total: singles_total,
+              units: section.settings.combo_units,
+              save_label: section.settings.save_label,
+              add_label: section.settings.add_label,
+              uid: section.id,
+              ajax: false
+            -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Thumb Fin cart add-ons",
+  "tag": "div",
+  "class": "section-thumbfin-cart-upsell",
+  "enabled_on": {
+    "templates": ["cart"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Add to your order"
+    },
+    {
+      "type": "product",
+      "id": "single_product",
+      "label": "Single Thumb Fin",
+      "info": "Used to calculate the combo savings. Without it, the combo's compare-at price is used if set."
+    },
+    {
+      "type": "product",
+      "id": "combo_product",
+      "label": "Combo pack",
+      "info": "Falls back to the product with handle combo-3-pack-one-of-each-version."
+    },
+    {
+      "type": "range",
+      "id": "combo_units",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "label": "Singles included in combo"
+    },
+    {
+      "type": "textarea",
+      "id": "combo_desc",
+      "label": "Combo description",
+      "default": "One of each version, so you can find your favorite before committing to one."
+    },
+    {
+      "type": "text",
+      "id": "save_label",
+      "label": "Combo savings tag",
+      "info": "Leave empty to calculate it from live prices."
+    },
+    {
+      "type": "product",
+      "id": "addon_product",
+      "label": "Add-on (contact paper)",
+      "info": "Falls back to the product with handle contact-paper-for-matte-finish."
+    },
+    {
+      "type": "textarea",
+      "id": "addon_desc",
+      "label": "Add-on description",
+      "default": "Satin or matte-finish bass? This gives the suction cup a surface to grip."
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Add to cart label",
+      "default": "Add to cart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Thumb Fin cart add-ons"
+    }
+  ]
+}
+{% endschema %}

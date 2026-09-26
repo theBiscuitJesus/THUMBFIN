@@ -1,0 +1,28 @@
+{%- comment -%}
+  Thumb Fin redesign: numbered "how it works" steps.
+
+  Accepts:
+  - blocks: {array} section blocks of type 'step' (settings: heading, text)
+  - heading: {string}
+  - text: {string}
+  - anchor: {string} id for the <section>, e.g. 'thumbfin-how'
+{%- endcomment -%}
+{%- if blocks.size > 0 -%}
+  <section class="tfr-section"{% if anchor != blank %} id="{{ anchor }}"{% endif %}>
+    <div class="tfr-wrap">
+      <div class="tfr-section-head">
+        <h2>{{ heading | escape }}</h2>
+        {%- if text != blank -%}<p>{{ text | escape }}</p>{%- endif -%}
+      </div>
+      <div class="tfr-steps">
+        {%- for block in blocks -%}
+          <div class="tfr-step" {{ block.shopify_attributes }}>
+            <div class="tfr-step-n">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</div>
+            <h3>{{ block.settings.heading | escape }}</h3>
+            <p>{{ block.settings.text | escape }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}

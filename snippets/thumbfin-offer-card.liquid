@@ -1,0 +1,85 @@
+{%- comment -%}
+  Thumb Fin redesign: a product offer card with its own add-to-cart button
+  (Combo 3-Pack, contact paper). Used on the homepage, product and cart sections.
+
+  Accepts:
+  - product: {product} the product to sell (required)
+  - description: {string} short pitch under the title
+  - prefix: {string} text before the title, e.g. '+ '
+  - featured: {boolean} brass border + primary button
+  - singles_total: {number} price of the equivalent singles, in cents. Drives the
+    "Save $X" tag and "vs $Y buying N separately" line. Falls back to the product's
+    compare-at price when omitted.
+  - units: {number} how many singles the pack replaces (for the compare line)
+  - save_label: {string} fixed savings tag text, overriding the calculated one
+  - add_label: {string} button label (default 'Add to cart')
+  - uid: {string} unique id for form controls
+  - ajax: {boolean} false posts a plain form (page reloads to the cart) instead of
+    using Dawn's <product-form> + cart notification. Default true.
+
+  Usage:
+  {% render 'thumbfin-offer-card', product: combo, featured: true, singles_total: 6000, units: 3, uid: section.id %}
+{%- endcomment -%}
+
+{%- liquid
+  assign reference_total = singles_total | default: 0
+  assign show_units = true
+  if reference_total == 0 and product.compare_at_price > product.price
+    assign reference_total = product.compare_at_price
+    assign show_units = false
+  endif
+  assign savings = 0
+  if reference_total > 0
+    assign savings = reference_total | minus: product.price
+  endif
+  assign button_label = add_label | default: 'Add to cart'
+  assign current = product.selected_or_first_available_variant
+-%}
+
+<div class="tfr-bundle-card{% if featured %} tfr-bundle-card--featured{% endif %}">
+  {%- if save_label != blank -%}
+    <span class="tfr-save-tag">{{ save_label | escape }}</span>
+  {%- elsif savings > 0 -%}
+    <span class="tfr-save-tag">Save {{ savings | money_without_trailing_zeros }}</span>
+  {%- endif -%}
+  <h3>
+    {{- prefix -}}
+    <a href="{{ product.url }}" class="tfr-card-link">{{ product.title | escape }}</a>
+  </h3>
+  {%- if description != blank -%}<p>{{ description | escape }}</p>{%- endif -%}
+  <div class="tfr-price">{{ product.price | money_without_trailing_zeros }}</div>
+  {%- if savings > 0 -%}
+    <p class="tfr-bundle-compare">
+      vs {{ reference_total | money_without_trailing_zeros }}
+      {%- if show_units and units > 1 %} buying {{ units }} separately{% endif -%}
+    </p>
+  {%- endif -%}
+
+  {%- if ajax != false -%}<product-form class="tfr-product-form" data-hide-errors="false">{%- endif -%}
+  {%- form 'product', product, novalidate: 'novalidate' -%}
+    {%- if product.has_only_default_variant -%}
+      <input type="hidden" name="id" value="{{ current.id }}">
+    {%- else -%}
+      <label class="tfr-visually-hidden" for="tfr-{{ uid }}-{{ product.id }}">{{ product.options | join: ' / ' | escape }}</label>
+      <select class="tfr-select" id="tfr-{{ uid }}-{{ product.id }}" name="id">
+        {%- for variant in product.variants -%}
+          <option value="{{ variant.id }}" {% if variant.id == current.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+            {{- variant.title | escape }} — {{ variant.price | money_without_trailing_zeros }}{% unless variant.available %} (sold out){% endunless -%}
+          </option>
+        {%- endfor -%}
+      </select>
+    {%- endif -%}
+    <button type="submit" name="add" class="tfr-btn {% if featured %}tfr-btn--primary{% else %}tfr-btn--ghost{% endif %}" {% unless product.available %}disabled{% endunless %}>
+      <span>
+        {%- if product.available -%}{{ button_label | escape }}{%- else -%}Sold out{%- endif -%}
+      </span>
+      {%- if ajax != false -%}{%- render 'loading-spinner' -%}{%- endif -%}
+    </button>
+    {%- if ajax != false -%}
+      <div class="product-form__error-message-wrapper tfr-form-error" role="alert" hidden>
+        <span class="product-form__error-message"></span>
+      </div>
+    {%- endif -%}
+  {%- endform -%}
+  {%- if ajax != false -%}</product-form>{%- endif -%}
+</div>

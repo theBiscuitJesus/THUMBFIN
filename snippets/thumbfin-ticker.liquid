@@ -1,0 +1,15 @@
+{%- comment -%}
+  Thumb Fin redesign: the trust strip ("Zero-damage suction mount" · ...).
+
+  Accepts:
+  - blocks: {array} section blocks of type 'ticker' (settings: highlight, text)
+{%- endcomment -%}
+{%- if blocks.size > 0 -%}
+  <div class="tfr-ticker">
+    <div class="tfr-wrap">
+      {%- for block in blocks -%}
+        <span {{ block.shopify_attributes }}><strong>{{ block.settings.highlight | escape }}</strong> {{ block.settings.text | escape }}</span>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
