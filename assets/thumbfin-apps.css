@@ -1,0 +1,25 @@
+/*
+  Thumb Fin redesign: keep app widgets readable on the dark theme.
+
+  Judge.me's review pop-ups and "Reviews" side tab draw white cards but inherit
+  the page's text colour, which is now light cream, so their text was nearly
+  invisible. Force dark text on a white card. Loaded on every page from
+  layout/theme.liquid, because the pop-up can appear anywhere.
+*/
+.jdgm-popup-card,
+.jdgm-revs-tab__main,
+.jdgm-revs-tab__content {
+  background-color: #ffffff !important;
+  color: #1a0e05 !important;
+}
+.jdgm-popup-card *:not(.jdgm-star),
+.jdgm-revs-tab__main *:not(.jdgm-star),
+.jdgm-revs-tab__content *:not(.jdgm-star) {
+  color: #1a0e05 !important;
+}
+/* Secondary lines (product name, dates) slightly softer but still dark */
+.jdgm-popup-card__prod-title,
+.jdgm-popup-card__prod-title *,
+.jdgm-revs-tab__content .jdgm-rev__timestamp {
+  color: #5a4632 !important;
+}
