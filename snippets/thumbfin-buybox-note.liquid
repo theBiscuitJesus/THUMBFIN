@@ -7,6 +7,8 @@
   - combo: {product} the Combo 3-Pack
   - addon: {product} the matte-finish contact paper
   - units: {number} singles in the combo (default 3)
+  - combo_label: {string} link text for the combo (default 'Combo 3 Pack')
+  - addon_label: {string} link text for the add-on (default 'contact paper')
 
   Shows nothing on the combo or add-on product pages themselves.
 
@@ -31,7 +33,7 @@
     {%- if show_combo -%}
       <p>
         <strong>Can’t pick a version?</strong>
-        The <a href="{{ combo.url }}">{{ combo.title | escape }}</a> gets you one of each for
+        The <a href="{{ combo.url }}">{{ combo_label | default: 'Combo 3 Pack' | escape }}</a> gets you one of each for
         {{ combo.price | money_without_trailing_zeros -}}
         {%- if savings > 0 %}, saving {{ savings | money_without_trailing_zeros }}{% endif %}.
       </p>
@@ -39,7 +41,7 @@
     {%- if show_addon -%}
       <p>
         <strong>Satin or matte bass?</strong>
-        Add <a href="{{ addon.url }}">{{ addon.title | escape }}</a>
+        Add our <a href="{{ addon.url }}">{{ addon_label | default: 'contact paper' | escape }}</a>
         ({{ addon.price | money_without_trailing_zeros }}) so the suction cup has a surface to grip.
       </p>
     {%- endif -%}
