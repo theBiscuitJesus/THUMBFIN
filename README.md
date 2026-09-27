@@ -112,3 +112,26 @@ zip -r thumbfin-theme-redesign.zip assets blocks config layout locales sections 
 - **Product pages:** colour swatches linking the Original's six per-colour products (`snippets/thumbfin-sibling-swatches.liquid`, navigation only, so reviews stay per product); Add to cart always in the primary style (`snippets/buy-buttons.liquid`); Judge.me stars under the title; phone-only sticky Add to cart bar (`snippets/thumbfin-sticky-atc.liquid`).
 - **Judge.me:** `assets/thumbfin-apps.css` (loaded site-wide from `layout/theme.liquid`) forces dark text on the white review pop-ups and Reviews side tab.
 - **Settings gotcha:** Dawn's radius settings only accept even numbers. An odd value makes Shopify drop the whole `config/settings_data.json` (no colours, default fonts).
+
+## Store changes made outside the theme (Shopify admin, via the Shopify connector)
+
+These live in Shopify, not in this repo. Recorded here with the previous values so they can be reverted.
+
+**Product merge:** the Original is now one product, `thumb-fin-original` (Color variants), carrying the Judge.me reviews. The six old per-colour products (`thumb-fin-black`, `-neon`, `-red`, `-sky-blue`, `-yellow`, `-pink`) are **Draft; do not delete** (they hold the original reviews). Their URLs 301-redirect to the matching `thumb-fin-original?variant=…`.
+
+**Product SEO (title / description):**
+
+| Product | New SEO title | Previous SEO title |
+| --- | --- | --- |
+| thumb-fin-original | Thumb Fin Original – Suction-Cup Bass Thumb Rest | (none) |
+| low-profile-thumb-fin-black-thumb-rest | Low Profile Bass Thumb Rest – 4mm Lower | Low Profile Thumb Fin \| Slimmer Thumb Rest |
+| contoured-low-profile-thumb-fin-thumb-rest | Contoured Low Profile Bass Thumb Rest | Contoured Low Profile Thumb Fin \| Thumb Rest |
+| combo-3-pack-one-of-each-version | Bass Thumb Rest 3 Pack – Try All Three Versions | Thumb Fin 3 Pack \| Try All Three Thumb Rests |
+| contact-paper-for-matte-finish | Contact Paper for Matte-Finish Basses | (none) |
+
+Previous SEO descriptions: Low Profile "Get a slimmer feel with the Low Profile Thumb Fin, about 4 mm lower than the original, with adjustable comfort for bass, guitar, ukulele, and more."; Contoured "Try a lower-profile thumb rest with a more concave side curve. Contoured Thumb Fin is about 4 mm lower than the original."; Combo "Try all three Thumb Fin versions in one bundle: original, low-profile, and contoured low-profile thumb rests for comfortable, adjustable playing."; Original and contact paper had none.
+
+**Collection:** `bass-thumb-rests` ("Bass Thumb Rests", manual, 4 products, intro description; SEO title "No-Drill Bass Thumb Rests – Suction-Cup Mount"). Added to the main menu between Home and Catalog.
+
+**Homepage (Online Store → Preferences, set by the owner):** new title/description and a social sharing image.
+
