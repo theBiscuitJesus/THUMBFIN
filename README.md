@@ -135,3 +135,15 @@ Previous SEO descriptions: Low Profile "Get a slimmer feel with the Low Profile 
 
 **Homepage (Online Store → Preferences, set by the owner):** new title/description and a social sharing image.
 
+**Product names and category (renamed via the connector; URLs/handles unchanged):**
+
+| Handle | New title | Previous title |
+| --- | --- | --- |
+| thumb-fin-original | Thumb Fin Original – Bass Thumb Rest | Thumb Fin Original |
+| low-profile-thumb-fin-black-thumb-rest | Thumb Fin Low Profile – Bass Thumb Rest | LOW PROFILE Thumb Fin  Thumb Rest |
+| contoured-low-profile-thumb-fin-thumb-rest | Thumb Fin Contoured Low Profile – Bass Thumb Rest | CONTOURED LOW PROFILE Thumb Fin  Thumb Rest |
+| combo-3-pack-one-of-each-version | Thumb Fin Combo 3 Pack – One of Each Version | Combo 3 Pack - One of Each version |
+| contact-paper-for-matte-finish | Thumb Fin Contact Paper for Matte Finishes | Contact Paper For Matte Finish |
+
+All five use the category *String Instrument Accessories > Guitar Accessories > Guitar Fittings & Parts* (the contact paper was previously *Guitar Slides*).
+
