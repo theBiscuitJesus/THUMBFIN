@@ -83,11 +83,11 @@ def page(title, preheader, blocks):
     <a href="https://thumbfin.com" target="_blank"><img src="{LOGO}" width="90" alt="Thumb Fin" style="display:block;width:90px;height:auto;border:0;"></a>
   </td></tr>
 {blocks}
-  <!-- Footer. {{ unsubscribe_link }} is required by Shopify Email for custom HTML. -->
+  <!-- Footer. {{ unsubscribe_link }} is required by Shopify Email for custom HTML; it renders a complete link, so it stands on its own. -->
   <tr><td align="center" class="px" style="padding:28px 40px 36px;border-top:1px solid #3d2a1a;">
     <div style="font-family:{HEAD};font-size:16px;font-weight:600;color:{CREAM};letter-spacing:.04em;">THUMB <span style="color:{BRASS};">FIN</span></div>
     <div style="font-family:{BODY};font-size:13px;color:{MUTED};line-height:1.6;padding-top:6px;">The patented suction-cup thumb rest. No drilling, no screws, no adhesive.<br><a href="https://thumbfin.com" style="color:{MUTED};">thumbfin.com</a></div>
-    <div style="font-family:{BODY};font-size:12px;color:{MUTED};line-height:1.6;padding-top:14px;">You're receiving this because you subscribed to emails from Thumb Fin.<br><a href="{{{{ unsubscribe_link }}}}" style="color:{MUTED};text-decoration:underline;">Unsubscribe</a></div>
+    <div style="font-family:{BODY};font-size:12px;color:{MUTED};line-height:1.6;padding-top:14px;">You're receiving this because you subscribed to emails from Thumb Fin.<br>{{{{ unsubscribe_link }}}}</div>
   </td></tr>
 </table>
 </td></tr>
