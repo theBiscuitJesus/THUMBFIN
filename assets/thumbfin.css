@@ -299,7 +299,7 @@
   background: transparent;
 }
 .tfr.tfr-signup[hidden] { display: none; }
-.tfr .tfr-signup-backdrop { position: absolute; inset: 0; background: rgba(12, 6, 2, 0.72); }
+.tfr .tfr-signup-backdrop { display: block; position: absolute; inset: 0; background: rgba(12, 6, 2, 0.72); } /* display: Dawn hides empty divs */
 .tfr .tfr-signup-card {
   position: relative; display: grid; grid-template-columns: 1fr; width: 100%; max-width: 440px;
   max-height: calc(100vh - 40px); overflow: auto;
