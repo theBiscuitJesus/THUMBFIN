@@ -49,12 +49,13 @@ def version_rows():
     return "\n".join(rows)
 
 
-def code_box(code):
+def code_box(code, note=None):
+    note = note or f"Applied automatically from the buttons in this email. Ends {ENDS}."
     return f"""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px dashed {BRASS};border-radius:6px;">
   <tr><td align="center" style="padding:16px 18px;">
     <div style="font-family:{BODY};font-size:13px;color:{MUTED};letter-spacing:.04em;text-transform:uppercase;">Your code</div>
     <div style="font-family:{HEAD};font-size:28px;font-weight:700;color:{NEON};letter-spacing:.06em;padding:4px 0;">{code}</div>
-    <div style="font-family:{BODY};font-size:13px;color:{MUTED};line-height:1.5;">Applied automatically from the buttons in this email. Ends {ENDS}.</div>
+    <div style="font-family:{BODY};font-size:13px;color:{MUTED};line-height:1.5;">{note}</div>
   </td></tr>
 </table>"""
 
@@ -162,6 +163,26 @@ def email_past_buyers():
     return page("A thank-you: 10% off your next Thumb Fin", "Two more shapes you may not have tried. 10% off for 48 hours.", blocks)
 
 
+def email_welcome():
+    code, shop = "WELCOME10", "https://thumbfin.com/discount/WELCOME10?redirect=/#thumbfin-shop"
+    combo = "https://thumbfin.com/discount/WELCOME10?redirect=/products/combo-3-pack-one-of-each-version"
+    blocks = "\n".join([
+        hero_block(True, "Welcome. Here's 10% off your first order."),
+        section(text("Hi {{ customer.first_name | default: 'there' }},", 16, CREAM, "0 0 12px")
+                + text("Thanks for joining the Thumb Fin list. As promised, <b style=\"color:#f4ecdd;\">here's 10% off your first order.</b>")
+                + text("Thumb Fin is a patented suction-cup thumb rest. It gives your thumb a relaxed, natural place to rest without drilling, screws or adhesive. Press it on, move it anytime, and take it off without a mark.", pad="0 0 24px")
+                + button("Get 10% off", shop)),
+        section(code_box(code, "Applied automatically from the buttons in this email, or enter it at checkout. One use per customer.")),
+        section(f'<div style="font-family:{HEAD};font-size:26px;font-weight:600;color:{CREAM};padding:8px 0 16px;">Pick your shape</div>'
+                + f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{version_rows()}</table>'
+                + text("Each one is $20, in six colors.", 14, MUTED, "4px 0 0")),
+        combo_block("One of each version for $50 (only $45 with your code). Find your favorite before committing to one.", combo, "Get the Combo 3 Pack"),
+        section(text("Playing a matte or satin bass? Add our $2 <a href=\"https://thumbfin.com/discount/WELCOME10?redirect=/products/contact-paper-for-matte-finish\" style=\"color:#c3ff5c;\">contact paper</a> so the suction cup has a surface to grip.", 14)
+                + text("Thanks for playing,<br><b style=\"color:#f4ecdd;\">Thumb Fin</b>", 15, MUTED, "0")),
+    ])
+    return page("Welcome to Thumb Fin: 10% off your first order", "Your 10% code is inside, plus how to pick your shape.", blocks)
+
+
 import re
 
 
@@ -174,4 +195,5 @@ def escape_urls(doc):
 out = pathlib.Path(__file__).parent
 (out / "email-1-non-buyers.html").write_text(escape_urls(email_non_buyers()))
 (out / "email-2-past-buyers.html").write_text(escape_urls(email_past_buyers()))
+(out / "email-3-welcome.html").write_text(escape_urls(email_welcome()))
 print("built", sorted(p.name for p in out.glob("*.html")))
