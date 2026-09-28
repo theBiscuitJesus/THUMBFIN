@@ -183,6 +183,26 @@ def email_welcome():
     return page("Welcome to Thumb Fin: 10% off your first order", "Your 10% code is inside, plus how to pick your shape.", blocks)
 
 
+def email_bogo():
+    code, shop = "BOGO", "https://thumbfin.com/discount/BOGO?redirect=/#thumbfin-shop"
+    ends = "Sunday, October 4 at 11:59 PM ET"
+    blocks = "\n".join([
+        hero_block(True, "Buy one Thumb Fin, get one free"),
+        section(text("Hi {{ customer.first_name | default: 'there' }},", 16, CREAM, "0 0 12px")
+                + text("This week only, <b style=\"color:#f4ecdd;\">buy any Thumb Fin and get a second one free.</b> Mix and match any shape and color.")
+                + text("Put one on every bass you own, try a second shape, or give one to a bandmate. Thumb Fin suction-mounts in seconds, with no drilling, screws or adhesive.", pad="0 0 24px")
+                + button("Shop buy one, get one", shop)),
+        section(f'<div style="font-family:{HEAD};font-size:26px;font-weight:600;color:{CREAM};padding:8px 0 16px;">Pick any two</div>'
+                + f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{version_rows()}</table>'
+                + text("Add two to your cart and the second one is free: two Thumb Fins for $20.", 14, MUTED, "4px 0 0")),
+        section(code_box(code, f"Applied automatically from the buttons in this email. Add two Thumb Fins to your cart to get one free. Ends {ends}.")),
+        section(button("Get two for $20", shop), "0 40px 28px"),
+        section(text("One free Thumb Fin per order. Valid on the Original, Low Profile and Contoured Low Profile; not valid on the Combo 3 Pack or contact paper, and can't be combined with other codes.", 12.5, MUTED, "0 0 18px")
+                + text("Thanks for playing,<br><b style=\"color:#f4ecdd;\">Thumb Fin</b>", 15, MUTED, "0")),
+    ])
+    return page("Buy one Thumb Fin, get one free", "This week only: mix and match any two Thumb Fins for $20.", blocks)
+
+
 import re
 
 
@@ -196,4 +216,5 @@ out = pathlib.Path(__file__).parent
 (out / "email-1-non-buyers.html").write_text(escape_urls(email_non_buyers()))
 (out / "email-2-past-buyers.html").write_text(escape_urls(email_past_buyers()))
 (out / "email-3-welcome.html").write_text(escape_urls(email_welcome()))
+(out / "email-4-bogo.html").write_text(escape_urls(email_bogo()))
 print("built", sorted(p.name for p in out.glob("*.html")))
