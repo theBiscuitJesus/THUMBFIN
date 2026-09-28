@@ -147,3 +147,10 @@ Previous SEO descriptions: Low Profile "Get a slimmer feel with the Low Profile 
 
 All five use the category *String Instrument Accessories > Guitar Accessories > Guitar Fittings & Parts* (the contact paper was previously *Guitar Slides*).
 
+
+**Discount codes:** `NEWSITE10` and `THANKYOU10` (10%, all customers, 27–29 Sep 2026, for the two campaign emails); `WELCOME10` (10%, one use per customer, no end date, combines only with shipping discounts) for the signup popup.
+
+## Email signup popup and emails
+
+- **Popup:** `sections/thumbfin-signup-popup.liquid`, in the footer group so it loads on every page (styles and the `thumbfin-signup` element are in `assets/thumbfin.css` / `assets/thumbfin.js`). It uses Shopify's customer form tagged `newsletter,signup-popup`, so signups join the Shopify Email list. It opens after 10 s or on desktop exit intent, stays hidden for 14 days after closing and for good after signing up, and is skipped on the cart and account pages and for subscribed customers. After submitting, the page reloads and the popup shows the code. Switch it on or edit it in the theme editor (footer → *Thumb Fin signup popup* → *Show popup to visitors*). Add `?signup-preview` to any URL to see it while it's off.
+- **Emails:** `emails/build.py` generates the Shopify Email custom-HTML files: `email-1-non-buyers.html` (NEWSITE10), `email-2-past-buyers.html` (THANKYOU10) and `email-3-welcome.html` (WELCOME10, for the welcome automation). Shopify Email needs `{{ open_tracking_block }}` and `{{ unsubscribe_link }}` (which renders a whole link, so it isn't wrapped in `<a>`), and `&` in URLs written as `&amp;`.
