@@ -134,3 +134,95 @@ if (!customElements.get('thumbfin-sticky-atc')) {
     }
   });
 }
+
+// Email signup popup (sections/thumbfin-signup-popup.liquid). Opens after a delay or on
+// desktop exit intent, once per visitor: closing hides it for `data-days`, signing up hides
+// it for good. After the form posts, the page reloads and the popup reopens with the code.
+if (!customElements.get('thumbfin-signup')) {
+  customElements.define('thumbfin-signup', class extends HTMLElement {
+    connectedCallback() {
+      this.storeKey = 'tfr-signup';
+      this.card = this.querySelector('[role="dialog"]');
+      this.querySelectorAll('[data-signup-close]').forEach((el) => el.addEventListener('click', () => this.close(true)));
+      this.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') this.close(true);
+        if (e.key === 'Tab') this.trapFocus(e);
+      });
+
+      const form = this.querySelector('form');
+      if (form) form.addEventListener('submit', () => this.store({ sent: Date.now() }));
+      const done = this.querySelector('[data-signup-done]');
+      if (done) done.addEventListener('click', () => this.store({ subscribed: true }));
+
+      const preview = /[?&]signup-preview\b/.test(location.search);
+      const saved = this.read();
+      const justSent = location.hash === '#TfrSignup' || (saved.sent && Date.now() - saved.sent < 10 * 60 * 1000);
+
+      if (justSent) {
+        // Back from submitting: show the code (or the error), then never show it again once it worked.
+        if (this.querySelector('[data-signup-done]')) this.store({ subscribed: true });
+        else this.store({});
+        this.open();
+        return;
+      }
+      if (window.Shopify && Shopify.designMode) {
+        document.addEventListener('shopify:section:select', (e) => { if (e.target.contains(this)) this.open(); });
+        document.addEventListener('shopify:section:deselect', (e) => { if (e.target.contains(this)) this.close(false); });
+        return;
+      }
+      if (preview) { this.open(); return; }
+      if (this.dataset.enabled !== 'true' || saved.subscribed || (saved.until && Date.now() < saved.until)) return;
+
+      const delay = Math.max(1, parseInt(this.dataset.delay, 10) || 10) * 1000;
+      this.timer = setTimeout(() => this.open(), delay);
+      if (this.dataset.exitIntent === 'true' && window.matchMedia('(pointer: fine)').matches) {
+        const onLeave = (e) => {
+          if (e.clientY > 0 || e.relatedTarget) return;
+          document.removeEventListener('mouseout', onLeave);
+          this.open();
+        };
+        setTimeout(() => document.addEventListener('mouseout', onLeave), 3000);
+        this.removeExit = () => document.removeEventListener('mouseout', onLeave);
+      }
+    }
+
+    read() {
+      try { return JSON.parse(localStorage.getItem(this.storeKey)) || {}; } catch (e) { return {}; }
+    }
+
+    store(value) {
+      try { localStorage.setItem(this.storeKey, JSON.stringify(value)); } catch (e) { /* storage blocked: popup just shows again next visit */ }
+    }
+
+    open() {
+      if (this.isOpen) return;
+      clearTimeout(this.timer);
+      if (this.removeExit) this.removeExit();
+      this.isOpen = true;
+      this.lastFocus = document.activeElement;
+      this.hidden = false;
+      document.documentElement.classList.add('tfr-signup-open');
+      this.card.focus({ preventScroll: true });
+    }
+
+    close(remember) {
+      if (!this.isOpen) return;
+      this.isOpen = false;
+      this.hidden = true;
+      document.documentElement.classList.remove('tfr-signup-open');
+      if (remember && !this.read().subscribed) {
+        const days = parseInt(this.dataset.days, 10) || 14;
+        this.store({ until: Date.now() + days * 86400000 });
+      }
+      if (this.lastFocus && this.lastFocus.focus) this.lastFocus.focus({ preventScroll: true });
+    }
+
+    trapFocus(e) {
+      const items = [...this.card.querySelectorAll('a[href], button, input:not([type="hidden"])')].filter((el) => !el.disabled && el.offsetParent !== null);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === this.card)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+}

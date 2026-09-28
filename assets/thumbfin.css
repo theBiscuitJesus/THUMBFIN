@@ -291,3 +291,69 @@
 .tfr .tfr-faq-answer p + p { margin-top: 10px; }
 .tfr .tfr-faq-answer a { color: var(--tfr-neon); text-underline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .tfr .tfr-faq-item summary::after { transition: none; } }
+
+/* Email signup popup (sections/thumbfin-signup-popup.liquid) */
+.tfr.tfr-signup {
+  position: fixed; inset: 0; z-index: 1001;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: transparent;
+}
+.tfr.tfr-signup[hidden] { display: none; }
+.tfr .tfr-signup-backdrop { position: absolute; inset: 0; background: rgba(12, 6, 2, 0.72); }
+.tfr .tfr-signup-card {
+  position: relative; display: grid; grid-template-columns: 1fr; width: 100%; max-width: 440px;
+  max-height: calc(100vh - 40px); overflow: auto;
+  background: var(--tfr-bg); border: 1px solid var(--tfr-brass-dim); border-radius: 6px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  animation: tfr-signup-in .25s ease-out;
+}
+.tfr .tfr-signup-card:focus { outline: none; }
+.tfr .tfr-signup-card--image { max-width: 780px; grid-template-columns: 0.9fr 1.1fr; }
+.tfr .tfr-signup-media { min-height: 100%; background: var(--tfr-panel-2); }
+.tfr .tfr-signup-media img { width: 100%; height: 100%; object-fit: cover; }
+.tfr .tfr-signup-body { padding: 40px 36px 32px; }
+.tfr .tfr-signup-eyebrow { color: var(--tfr-brass); font-size: 14px; letter-spacing: 0.03em; margin-bottom: 10px; }
+.tfr .tfr-signup-body h2 { font-size: 34px; line-height: 1.1; }
+.tfr .tfr-signup-text { color: var(--tfr-muted); margin: 14px 0 22px; }
+.tfr .tfr-signup-input {
+  display: block; width: 100%; min-height: 48px; padding: 12px 14px;
+  background: var(--tfr-panel-2); color: var(--tfr-cream);
+  border: 1px solid var(--tfr-brass-dim); border-radius: 3px;
+  font-family: inherit; font-size: 16px;
+}
+.tfr .tfr-signup-input::placeholder { color: var(--tfr-muted); opacity: .8; }
+.tfr .tfr-signup-input:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 2px; border-color: var(--tfr-neon); }
+.tfr .tfr-signup-submit { width: 100%; margin-top: 12px; }
+.tfr .tfr-signup-decline {
+  display: block; margin: 14px auto 0; padding: 4px 8px; background: none; border: 0;
+  color: var(--tfr-muted); font-family: inherit; font-size: 14px; text-decoration: underline; cursor: pointer;
+}
+.tfr .tfr-signup-decline:hover { color: var(--tfr-cream); }
+.tfr .tfr-signup-fine { color: var(--tfr-muted); font-size: 12.5px; text-align: center; margin-top: 14px; opacity: .85; }
+.tfr .tfr-signup-code {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  border: 1px dashed var(--tfr-brass); border-radius: 6px; padding: 14px;
+}
+.tfr .tfr-signup-code span { color: var(--tfr-muted); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; }
+.tfr .tfr-signup-code strong { font-family: var(--tfr-font-heading); font-size: 30px; color: var(--tfr-neon); letter-spacing: .06em; }
+.tfr .tfr-signup-close {
+  position: absolute; top: 10px; right: 10px; z-index: 1;
+  display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  background: rgba(26, 14, 5, 0.75); color: var(--tfr-cream); border: 0; border-radius: 50%; cursor: pointer;
+}
+.tfr .tfr-signup-close:focus-visible, .tfr .tfr-signup-decline:focus-visible { outline: 2px solid var(--tfr-neon); outline-offset: 2px; }
+html.tfr-signup-open { overflow: hidden; }
+@keyframes tfr-signup-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tfr .tfr-signup-card { animation: none; } }
+/* Phones: a bottom sheet with a short photo strip */
+@media (max-width: 699px) {
+  .tfr.tfr-signup { align-items: flex-end; padding: 0; }
+  .tfr .tfr-signup-card, .tfr .tfr-signup-card--image {
+    grid-template-columns: 1fr; max-width: none; max-height: 92vh; border-radius: 12px 12px 0 0; border-bottom: 0;
+  }
+  .tfr .tfr-signup-media { height: 150px; min-height: 0; }
+  .tfr .tfr-signup-body { padding: 26px 20px 24px; }
+  .tfr .tfr-signup-body h2 { font-size: 28px; }
+  .tfr .tfr-signup-text { margin: 10px 0 18px; }
+}
+@media (max-width: 699px) and (max-height: 640px) { .tfr .tfr-signup-media { display: none; } }
