@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.footer.name",
   "type": "footer",
@@ -5,18 +14,18 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "link_list_4AA7Ww": {
-          "type": "link_list",
-          "settings": {
-            "heading": "EU Customer Rights",
-            "menu": "eu-customer-rights-or-returns-withdrawal"
-          }
-        },
         "link_list_help": {
           "type": "link_list",
           "settings": {
             "heading": "Help",
             "menu": "footer"
+          }
+        },
+        "link_list_4AA7Ww": {
+          "type": "link_list",
+          "settings": {
+            "heading": "EU Customer Rights",
+            "menu": "eu-customer-rights-or-returns-withdrawal"
           }
         }
       },
@@ -42,7 +51,22 @@
     "thumbfin_signup": {
       "type": "thumbfin-signup-popup",
       "settings": {
-        "enabled": false
+        "enabled": true,
+        "delay": 10,
+        "exit_intent": true,
+        "days": 14,
+        "show_image": true,
+        "eyebrow": "Join the Thumb Fin list",
+        "heading": "Get 10% off your first Thumb Fin",
+        "text": "Sign up for new colors, playing tips and subscriber-only deals.",
+        "button_label": "Get my 10%",
+        "decline_label": "No thanks",
+        "fine_print": "One use per customer. Unsubscribe anytime.",
+        "code": "WELCOME10",
+        "success_heading": "You're in!",
+        "success_text": "Here's 10% off your first order.",
+        "shop_label": "Shop with 10% off",
+        "success_fine": "The button applies your code automatically. You can also enter it at checkout."
       }
     }
   },
