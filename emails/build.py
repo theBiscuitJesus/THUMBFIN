@@ -109,7 +109,7 @@ def section(inner, pad="0 40px 28px"):
 
 def hero_block(badge, heading):
     return (f'  <tr><td style="padding:0;"><img src="{HERO}" width="600" alt="Thumb Fin thumb rests on a bass" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></td></tr>\n'
-            + section(f"""<div style="padding-top:30px;"><span style="display:inline-block;border:1px solid {BRASS_DIM};border-radius:999px;padding:6px 12px;font-family:{BODY};font-size:13px;color:{BRASS};">&#9733; <b style="color:{CREAM};">4.84</b> from 145 reviews &middot; Patented design</span></div>
+            + section(f"""<div style="padding-top:30px;"><span style="display:inline-block;border:1px solid {BRASS_DIM};border-radius:999px;padding:6px 12px;font-family:{BODY};font-size:13px;color:{BRASS};">&#9733; <b style="color:{CREAM};">4.84</b> from 146 reviews &middot; Patented design</span></div>
 <h1 class="h1" style="margin:18px 0 0;font-family:{HEAD};font-size:38px;line-height:1.1;font-weight:700;color:{CREAM};">{heading}</h1>""", "0 40px 18px"))
 
 

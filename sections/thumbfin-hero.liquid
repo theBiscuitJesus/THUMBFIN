@@ -8,11 +8,25 @@
   <section class="tfr-hero">
     <div class="tfr-wrap tfr-hero-grid">
       <div>
-        {%- if section.settings.rating != blank -%}
+        {%- liquid
+          # Live store-wide numbers from Judge.me (updated by the app as reviews come in);
+          # the typed Rating / Review count are the fallback.
+          assign rating = section.settings.rating
+          assign rating_count = section.settings.rating_count
+          if section.settings.live_rating
+            assign jm_rating = shop.metafields.judgeme.all_reviews_rating.value | default: shop.metafields.judgeme.all_reviews_rating
+            assign jm_count = shop.metafields.judgeme.all_reviews_count.value | default: shop.metafields.judgeme.all_reviews_count
+            if jm_rating != blank and jm_count != blank and jm_count != '0'
+              assign rating = jm_rating | times: 1.0 | round: 2
+              assign rating_count = jm_count
+            endif
+          endif
+        -%}
+        {%- if rating != blank -%}
           <p class="tfr-badge">
             <span aria-hidden="true">★</span>
-            <b>{{ section.settings.rating | escape }}</b>
-            {%- if section.settings.rating_count != blank %} from {{ section.settings.rating_count | escape }} {{ section.settings.rating_suffix | escape }}{% endif -%}
+            <b>{{ rating | escape }}</b>
+            {%- if rating_count != blank %} from {{ rating_count | escape }} {{ section.settings.rating_suffix | escape }}{% endif -%}
             {%- if section.settings.badge_extra != blank %} · {{ section.settings.badge_extra | escape }}{% endif -%}
           </p>
         {%- endif -%}
@@ -50,6 +64,7 @@
   "tag": "div",
   "class": "section-thumbfin-hero",
   "settings": [
+    { "type": "checkbox", "id": "live_rating", "label": "Use live Judge.me rating and review count", "info": "Falls back to the numbers below if Judge.me has none.", "default": true },
     { "type": "text", "id": "rating", "label": "Rating", "default": "4.84" },
     { "type": "text", "id": "rating_count", "label": "Review count", "default": "145" },
     { "type": "text", "id": "rating_suffix", "label": "Text after the count", "default": "reviews" },
