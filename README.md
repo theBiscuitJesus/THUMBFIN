@@ -148,7 +148,7 @@ Previous SEO descriptions: Low Profile "Get a slimmer feel with the Low Profile 
 All five use the category *String Instrument Accessories > Guitar Accessories > Guitar Fittings & Parts* (the contact paper was previously *Guitar Slides*).
 
 
-**Discount codes:** `NEWSITE10` and `THANKYOU10` (10%, all customers, 27–29 Sep 2026, for the two campaign emails); `WELCOME10` (10%, one use per customer, no end date, combines only with shipping discounts) for the signup popup.
+**Discount codes:** `NEWSITE10` and `THANKYOU10` (10%, all customers, 27–29 Sep 2026, for the two campaign emails); `WELCOME10` (10%, one use per customer, no end date, combines only with shipping discounts) for the signup popup; `BOGO` (buy one single, get one free, one per order, 28 Sep – 4 Oct 2026). Automatic discount *Free US shipping on orders over $35* (US only, makes the $4.90 Economy rate free, combines with product and order codes), announced first in the auto-rotating announcement bar.
 
 ## Email signup popup and emails
 
