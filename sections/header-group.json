@@ -27,9 +27,17 @@
             "text": "No drilling. No adhesive. Moves between instruments.",
             "link": ""
           }
+        },
+        "announcement_freeship": {
+          "type": "announcement",
+          "settings": {
+            "text": "Free US shipping on orders over $35",
+            "link": "shopify://collections/bass-thumb-rests"
+          }
         }
       },
       "block_order": [
+        "announcement_freeship",
         "announcement-bar-0",
         "announcement_ryMayD"
       ],
@@ -37,7 +45,7 @@
         "color_scheme": "scheme-thumbfin",
         "show_line_separator": true,
         "show_social": false,
-        "auto_rotate": false,
+        "auto_rotate": true,
         "change_slides_speed": 5,
         "enable_country_selector": false,
         "enable_language_selector": false
